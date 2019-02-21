@@ -217,7 +217,7 @@ components:
           type: string
           minLength: 2
           maxLength: 256
-        mycontent:
+        content:
           type: string
           minLength: 2
           maxLength: 20000
@@ -226,7 +226,7 @@ components:
             $ref: '#/components/schemas/Tag'
       required:
         - title
-        - mycontent
+        - content
         - tags
 
     # Schema for image uploaded by user
