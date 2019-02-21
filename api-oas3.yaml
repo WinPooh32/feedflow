@@ -194,6 +194,7 @@ components:
         email:
           type: string
           minLength: 6
+          pattern: '^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$'
 
     # Schema for log in request body
     LoginRequest:
