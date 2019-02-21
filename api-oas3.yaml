@@ -157,6 +157,11 @@ components:
             $ref: '#/components/schemas/Error'
 
   schemas:
+    Tag:
+      type: string
+      minLength: 2
+      maxLength: 32
+
     MD5Hash:
       type: string
       minLength: 32
@@ -216,8 +221,8 @@ components:
           minLength: 2
           maxLength: 20000
         tags:
-          type: array
-          maxLength: 20
+          items:
+            $ref: '#/components/schemas/Tag'
       required:
         - title
         - mycontent
