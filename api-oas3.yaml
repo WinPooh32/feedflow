@@ -1,9 +1,10 @@
 openapi: 3.0.0
 info:
   title: FeedFlow
-  version: 0.2.0
+  version: 0.3.0
   contact: {}
-security: []
+security:
+  - cookieAuth: []
 servers:
   - url: 'http://127.0.0.1:8080/api'
     description: Dev server
@@ -37,6 +38,56 @@ paths:
           description: Too many requests.
 
   #Pages tagged api -----------------------------------------------
+  /pages/login:
+    post:
+      summary: Logs in and returns the authentication cookie
+      tags:
+        - Pages
+      requestBody:
+        required: true
+        description: A JSON object containing the login and password.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      security: []  # no authentication
+      responses:
+        '200':
+          description: >
+            Successfully authenticated.
+            The session ID is returned in a cookie named `SESSIONID`. You need to include this cookie in subsequent requests.
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: SESSIONID=abcde12345; Path=/; HttpOnly
+
+  /pages/signin:
+    post:
+      summary: Singns in
+      tags:
+        - Pages
+      requestBody:
+        required: true
+        description: A JSON object containing the login and password.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninRequest'
+      security: []  # no authentication
+      responses:
+        '200':
+          description: >
+            Successfully authenticated.
+            The session ID is returned in a cookie named `SESSIONID`. You need to include this cookie in subsequent requests.
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: SESSIONID=abcde12345; Path=/; HttpOnly
+        '406':
+          description: Not Acceptable data
+  
   /pages/add:
     post:
       summary: Add a new page.
@@ -68,6 +119,10 @@ paths:
       responses:
         '200':
           description: Image has been uploaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MD5Hash'
         '401':
           $ref: '#/components/responses/Unauthorized'
 
@@ -102,6 +157,11 @@ components:
             $ref: '#/components/schemas/Error'
 
   schemas:
+    MD5Hash:
+      type: string
+      minLength: 32
+      maxLength: 32
+
     # Schema for error response body
     Error:
       type: object
@@ -114,17 +174,46 @@ components:
         - code
         - message
 
+    # Schema for sign in request body
+    SigninRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 2
+          maxLength: 32
+        password:
+          type: string
+          minLength: 10
+          maxLength: 32
+        email:
+          type: string
+          minLength: 6
+
+    # Schema for log in request body
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 2
+          maxLength: 32
+        password:
+          type: string
+          minLength: 10
+          maxLength: 32
+
     # Schema for page content created by user
     NewPageContent:
       type: object
       properties:
         title: 
           type: string
-          minLength: 3
+          minLength: 2
           maxLength: 256
         mycontent:
           type: string
-          minLength: 3
+          minLength: 2
           maxLength: 20000
         tags:
           type: array
@@ -140,19 +229,17 @@ components:
       properties:
         #md5 hash string of image
         hash:
-          type: string
-          minLength: 32
-          maxLength: 32
+          $ref: '#/components/schemas/MD5Hash'
         fileName:
           type: string
           format: binary
 
   securitySchemes:
-    session:
+    CookieAuth:
       type: apiKey
-      name: session
+      name: SESSIONID
       in: cookie
-
+  
 tags:
   - name: Feed
   - name: Pages
