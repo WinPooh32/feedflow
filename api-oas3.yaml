@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: FeedFlow
+  version: 0.1.0
+  contact: {}
+security: []
+servers:
+  - url: 'http://127.0.0.1:8080/api'
+    description: Dev server
+
+paths:
+  /feed/request:
+    get:
+      summary: Return next feed data chunk.
+      operationId: requestChunk
+      tags:
+        - Feed
+      parameters:
+        - name: pageId
+          in: query
+          required: true
+          schema:
+            type: number
+            default: '0'
+        # Parameter of chunk begin
+        - name: since
+          in: query
+          required: true
+          schema:
+            type: number
+            default: '0'
+      responses:
+        '200':
+          description: Ok.
+        '429':
+          description: Too many requests.
+
+  /pages/add:
+    post:
+      summary: Add a new page.
+      operationId: add
+      tags:
+        - Pages
+      responses:
+        '200':
+          description: Page has been added.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  
+  /pages/remove:
+    delete:
+      summary: Move page to archive.
+      operationId: remove
+      tags:
+          - Pages
+      responses:
+        '200':
+          description: Page has been moved to archive.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  links: {}
+  callbacks: {}
+
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    # Schema for error response body
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+
+    # Schema for page content created by user
+    newPageContent:
+      type: object
+      properties:
+        title: 
+          type: string
+        mycontent:
+          type: string
+        tags:
+          type: array
+      required:
+        - title
+        - mycontent
+        - tags
+
+  securitySchemes:
+    session:
+      type: apiKey
+      name: session
+      in: cookie
+
+tags:
+  - name: Feed
+  - name: Pages
