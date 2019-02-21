@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: FeedFlow
-  version: 0.1.0
+  version: 0.2.0
   contact: {}
 security: []
 servers:
@@ -9,6 +9,7 @@ servers:
     description: Dev server
 
 paths:
+  #Feed tagged api ------------------------------------------------
   /feed/request:
     get:
       summary: Return next feed data chunk.
@@ -35,18 +36,41 @@ paths:
         '429':
           description: Too many requests.
 
+  #Pages tagged api -----------------------------------------------
   /pages/add:
     post:
       summary: Add a new page.
       operationId: add
       tags:
         - Pages
+      requestBody:
+        content:
+          application/x-www-form-urlencoded; charset=utf-8:
+            schema:
+              $ref: '#/components/schemas/NewPageContent'
       responses:
         '200':
           description: Page has been added.
         '401':
           $ref: '#/components/responses/Unauthorized'
   
+  /pages/img/upload/:
+    post:
+      summary: Upload a new image.
+      operationId: imgUpload
+      tags:
+        - Pages
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+               $ref: '#/components/schemas/UploadImg'
+      responses:
+        '200':
+          description: Image has been uploaded.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
   /pages/remove:
     delete:
       summary: Move page to archive.
@@ -91,19 +115,37 @@ components:
         - message
 
     # Schema for page content created by user
-    newPageContent:
+    NewPageContent:
       type: object
       properties:
         title: 
           type: string
+          minLength: 3
+          maxLength: 256
         mycontent:
           type: string
+          minLength: 3
+          maxLength: 20000
         tags:
           type: array
+          maxLength: 20
       required:
         - title
         - mycontent
         - tags
+
+    # Schema for image uploaded by user
+    UploadImg:
+      type: object
+      properties:
+        #md5 hash string of image
+        hash:
+          type: string
+          minLength: 32
+          maxLength: 32
+        fileName:
+          type: string
+          format: binary
 
   securitySchemes:
     session:
