@@ -1,5 +1,71 @@
 package main
 
-func main() {
+import (
+	"flag"
+	"fmt"
+	"log"
 
+	"github.com/fvbock/endless"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+)
+
+type settings struct {
+	Port *string
+	Host *string
+
+	DbHost     *string
+	DbPort     *string
+	DbDriver   *string
+	DbUser     *string
+	DbPassword *string
+	DbName     *string
+	DbSsl      *bool
+}
+
+func readSettings() settings {
+	var s settings
+
+	s.Host = flag.String("host", "localhost", "listening server ip")
+	s.Port = flag.String("port", "8080", "listening port")
+
+	s.DbHost = flag.String("dbhost", "localhost", "listening database server ip")
+	s.DbPort = flag.String("dbport", "5432", "listening database port")
+	s.DbDriver = flag.String("dbdriver", "postgres", "The database diver")
+	s.DbUser = flag.String("dbuser", "", "The database username")
+	s.DbPassword = flag.String("dbpass", "", "The database user password")
+	s.DbName = flag.String("dbname", "", "The database name")
+	s.DbSsl = flag.Bool("dbssl", false, "The database ssl enabled")
+
+	return s
+}
+
+func main() {
+	debug := gin.Mode() == gin.DebugMode
+
+	svSettings := readSettings()
+
+	//Make new gin router
+	router := gin.Default()
+
+	db, err := initDatabse(svSettings, debug)
+	if err != nil {
+		log.Println(err)
+	} else {
+		router.Use(databaseMiddleware(db))
+		migrateModels(db)
+	}
+
+	if debug {
+		router.Use(cors.Default())
+	}
+
+	RouteAPI(router)
+
+	listenAt := fmt.Sprintf("%s:%s", *svSettings.Host, *svSettings.Port)
+	if err := endless.ListenAndServe(listenAt, router); err != nil {
+		log.Fatalln(err)
+	}
 }
