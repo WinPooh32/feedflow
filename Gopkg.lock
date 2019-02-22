@@ -3,6 +3,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:56c69e124c07977fd63e910f0812fddc5af475a8d2007dbf78803b3ef6a9ee3e"
+  name = "github.com/foolin/gin-template"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "089e62d1d723b168b89e8dbb0e823228b7366358"
+
+[[projects]]
+  branch = "master"
   digest = "1:0ae01c9e122d522c729f55986d052983d7e813f3e82a32b887374906a286e7de"
   name = "github.com/fvbock/endless"
   packages = ["."]
@@ -124,6 +132,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/foolin/gin-template",
     "github.com/fvbock/endless",
     "github.com/gin-contrib/cors",
     "github.com/gin-gonic/gin",

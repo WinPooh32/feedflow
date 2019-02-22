@@ -3,8 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
+	"time"
 
+	gintemplate "github.com/foolin/gin-template"
 	"github.com/fvbock/endless"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -41,6 +44,25 @@ func readSettings() settings {
 
 	flag.Parse()
 	return s
+}
+
+func initTemplateManager(router *gin.Engine) {
+	//new template engine
+	router.HTMLRender = gintemplate.New(gintemplate.TemplateConfig{
+		Root:      "views",
+		Extension: ".html",
+		Master:    "layouts/master",
+		Partials:  []string{"partials/ad"},
+		Funcs: template.FuncMap{
+			"sub": func(a, b int) int {
+				return a - b
+			},
+			"copy": func() string {
+				return time.Now().Format("2006")
+			},
+		},
+		DisableCache: true,
+	})
 }
 
 func main() {
