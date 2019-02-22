@@ -15,8 +15,6 @@ import (
 
 //UploadImg model
 type UploadImg struct {
-	model
-
 	Hash     string    `json:"hash"`
 	FileName **os.File `json:"fileName"`
 }

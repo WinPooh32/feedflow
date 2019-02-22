@@ -11,8 +11,6 @@ package main
 
 //Error model
 type Error struct {
-	model
-
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }

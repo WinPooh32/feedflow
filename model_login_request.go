@@ -11,8 +11,6 @@ package main
 
 //LoginRequest model
 type LoginRequest struct {
-	model
-
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
