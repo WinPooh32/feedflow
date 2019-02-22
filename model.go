@@ -15,6 +15,7 @@ func migrateModels(db *gorm.DB) {
 	db.AutoMigrate(
 		Error{},
 		LoginRequest{},
+		Tag{},
 		NewPageContent{},
 		SigninRequest{},
 		UploadImg{})

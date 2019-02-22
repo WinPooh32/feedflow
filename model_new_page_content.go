@@ -13,7 +13,15 @@ package main
 type NewPageContent struct {
 	model
 
-	Title   string   `json:"title"`
-	Content string   `json:"content"`
-	Tags    []string `json:"tags"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+	Tags    []Tag  `json:"tags" gorm:"auto_preload"`
+}
+
+//Tag model
+type Tag struct {
+	string
+	model
+
+	NewPageContentID uint `json:"-"`
 }
