@@ -40,7 +40,8 @@ paths:
   #Pages tagged api -----------------------------------------------
   /pages/login:
     post:
-      summary: Logs in and returns the authentication cookie
+      summary: Logs in and returns the authentication cookie.
+      operationId: login
       tags:
         - Pages
       requestBody:
@@ -64,7 +65,8 @@ paths:
 
   /pages/signin:
     post:
-      summary: Singns in
+      summary: Singns in.
+      operationId: signin
       tags:
         - Pages
       requestBody:
