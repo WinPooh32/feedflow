@@ -20,8 +20,8 @@ type NewPageContent struct {
 
 //Tag model
 type Tag struct {
-	string
 	model
 
+	Value            string
 	NewPageContentID uint `json:"-"`
 }
