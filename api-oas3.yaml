@@ -197,6 +197,10 @@ components:
           type: string
           minLength: 6
           pattern: '^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$'
+      required:
+        - username
+        - password
+        - email
 
     # Schema for log in request body
     LoginRequest:
@@ -210,6 +214,9 @@ components:
           type: string
           minLength: 10
           maxLength: 32
+      required:
+        - username
+        - password
 
     # Schema for page content created by user
     NewPageContent:
@@ -241,6 +248,9 @@ components:
         fileName:
           type: string
           format: binary
+      required:
+        - hash
+        - fileName
 
   securitySchemes:
     CookieAuth:
