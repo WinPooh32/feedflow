@@ -16,12 +16,14 @@ func initPostgres(setts settings) (*gorm.DB, error) {
 		sslmode = "disable"
 	}
 
-	db, err := gorm.Open(
-		*setts.DbDriver,
-		fmt.Sprintf(
-			"host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
-			*setts.DbHost, *setts.DbPort, *setts.DbUser,
-			*setts.DbName, *setts.DbPassword, sslmode))
+	dbArgs := fmt.Sprintf(
+		"host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
+		*setts.DbHost, *setts.DbPort, *setts.DbUser,
+		*setts.DbName, *setts.DbPassword, sslmode)
+
+	fmt.Println(dbArgs)
+
+	db, err := gorm.Open(*setts.DbDriver, dbArgs)
 	return db, err
 }
 

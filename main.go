@@ -39,6 +39,7 @@ func readSettings() settings {
 	s.DbName = flag.String("dbname", "", "The database name")
 	s.DbSsl = flag.Bool("dbssl", false, "The database ssl enabled")
 
+	flag.Parse()
 	return s
 }
 
@@ -52,7 +53,7 @@ func main() {
 
 	db, err := initDatabse(svSettings, debug)
 	if err != nil {
-		log.Println(err)
+		log.Println("Database error:", err)
 	} else {
 		router.Use(databaseMiddleware(db))
 		migrateModels(db)
