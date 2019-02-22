@@ -10,7 +10,6 @@
 package main
 
 import (
-	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -49,19 +48,7 @@ func RouteAPI(router *gin.Engine) *gin.Engine {
 	return router
 }
 
-// Index is the index handler.
-func Index(c *gin.Context) {
-	c.String(http.StatusOK, "Hello World!")
-}
-
 var routes = Routes{
-	{
-		"Index",
-		"GET",
-		"/api/",
-		Index,
-	},
-
 	{
 		"RequestChunk",
 		strings.ToUpper("Get"),
