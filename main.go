@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/WinPooh32/feedflow/api"
@@ -50,13 +53,40 @@ func readSettings() settings {
 	return s
 }
 
+func listPartials(viewsPath, partialsPath, fileExtension string) []string {
+	partials := make([]string, 0)
+	walkPath := viewsPath + "/" + partialsPath
+
+	err := filepath.Walk(walkPath,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if !info.IsDir() {
+				trimmed := strings.TrimLeft(path, viewsPath+"/")
+				trimmed = strings.TrimSuffix(trimmed, fileExtension)
+
+				partials = append(partials, trimmed)
+			}
+
+			return nil
+		})
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println("Listed partials:", partials)
+	return partials
+}
+
 func initTemplateManager(router *gin.Engine) {
 	//new template engine
 	router.HTMLRender = gintemplate.New(gintemplate.TemplateConfig{
 		Root:      "views",
 		Extension: ".html",
 		Master:    "layouts/master",
-		Partials:  []string{"partials/ad"},
+		Partials:  listPartials("views", "partials", ".html"),
 		Funcs: template.FuncMap{
 			"copy": func() string {
 				return time.Now().Format("2006")
@@ -64,6 +94,12 @@ func initTemplateManager(router *gin.Engine) {
 		},
 		DisableCache: true,
 	})
+}
+
+func routeStatic(router *gin.Engine, prefix string) {
+	router.Static(prefix, "./assets")
+	// router.StaticFS("/more_static", http.Dir("my_file_system"))
+	router.StaticFile("/bundle.js", "./frontend/dist/bundle.js")
 }
 
 func initRouter(router *gin.Engine, svSettings settings, debug bool) *gin.Engine {
@@ -81,6 +117,7 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) *gin.Engine
 	}
 
 	initTemplateManager(router)
+	routeStatic(router, "/assets")
 	web.RouteWeb(router)
 	api.RouteAPI(router)
 
