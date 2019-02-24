@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"time"
@@ -11,7 +11,8 @@ type model struct {
 	DeletedAt *time.Time `json:"-" sql:"index"`
 }
 
-func migrateModels(db *gorm.DB) {
+//MigrateModels - auto migrate orm models
+func MigrateModels(db *gorm.DB) {
 	db.AutoMigrate(
 		Error{},
 		LoginRequest{},

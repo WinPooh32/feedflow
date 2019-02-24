@@ -7,6 +7,10 @@ import (
 	"log"
 	"time"
 
+	"github.com/WinPooh32/feedflow/api"
+	"github.com/WinPooh32/feedflow/model"
+	"github.com/WinPooh32/feedflow/web"
+
 	gintemplate "github.com/foolin/gin-template"
 	"github.com/fvbock/endless"
 	"github.com/gin-contrib/cors"
@@ -65,27 +69,33 @@ func initTemplateManager(router *gin.Engine) {
 	})
 }
 
-func main() {
-	debug := gin.Mode() == gin.DebugMode
-
-	svSettings := readSettings()
-
-	//Make new gin router
-	router := gin.Default()
-
+func initRouter(router *gin.Engine, svSettings settings, debug bool) *gin.Engine {
 	db, err := initDatabse(svSettings, debug)
+
 	if err != nil {
 		log.Println("Database error:", err)
 	} else {
 		router.Use(databaseMiddleware(db))
-		migrateModels(db)
+		model.MigrateModels(db)
 	}
 
 	if debug {
 		router.Use(cors.Default())
 	}
 
-	RouteAPI(router)
+	initTemplateManager(router)
+	web.RouteWeb(router)
+	api.RouteAPI(router)
+
+	return router
+}
+
+func main() {
+	debug := gin.Mode() == gin.DebugMode
+	svSettings := readSettings()
+
+	//Make new gin router
+	router := initRouter(gin.Default(), svSettings, debug)
 
 	listenAt := fmt.Sprintf("%s:%s", *svSettings.Host, *svSettings.Port)
 	if err := endless.ListenAndServe(listenAt, router); err != nil {
