@@ -58,9 +58,6 @@ func initTemplateManager(router *gin.Engine) {
 		Master:    "layouts/master",
 		Partials:  []string{"partials/ad"},
 		Funcs: template.FuncMap{
-			"sub": func(a, b int) int {
-				return a - b
-			},
 			"copy": func() string {
 				return time.Now().Format("2006")
 			},
