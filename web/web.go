@@ -12,3 +12,7 @@ func index(ctx *gin.Context) {
 		"title": "Hello, web!",
 	})
 }
+
+func notFound(ctx *gin.Context) {
+	gintemplate.HTML(ctx, http.StatusNotFound, "404.html", gin.H{})
+}
