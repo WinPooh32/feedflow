@@ -18,8 +18,6 @@ import (
 	"github.com/fvbock/endless"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 type settings struct {
@@ -43,10 +41,10 @@ func readSettings() settings {
 
 	s.DbHost = flag.String("dbhost", "localhost", "listening database server ip")
 	s.DbPort = flag.String("dbport", "5432", "listening database port")
-	s.DbDriver = flag.String("dbdriver", "postgres", "The database diver")
+	s.DbDriver = flag.String("dbdriver", "sqlite3", "The database diver")
 	s.DbUser = flag.String("dbuser", "", "The database username")
 	s.DbPassword = flag.String("dbpass", "", "The database user password")
-	s.DbName = flag.String("dbname", "", "The database name")
+	s.DbName = flag.String("dbname", "storage", "The database name")
 	s.DbSsl = flag.Bool("dbssl", false, "The database ssl enabled")
 
 	flag.Parse()
