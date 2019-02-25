@@ -6,6 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+)
+
+const (
+	postgresql = "postgres"
+	mysql      = "mysql"
+	sqlite     = "sqlite3"
 )
 
 func initPostgres(setts settings) (*gorm.DB, error) {
@@ -25,20 +32,38 @@ func initPostgres(setts settings) (*gorm.DB, error) {
 	return db, err
 }
 
+func initSqlite(setts settings) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite, *setts.DbName+"."+sqlite)
+	return db, err
+}
+
 func initDatabse(setts settings, debug bool) (*gorm.DB, error) {
 	var db *gorm.DB
 	var err error
 
+	//Try to use any db if we can
 	switch driver := *setts.DbDriver; driver {
-	case "postgres":
+	case postgresql:
 		db, err = initPostgres(setts)
+	// case "mysql":
+	//TODO mysql initialization
+	case sqlite:
+		db, err = initSqlite(setts)
 	default:
-		return nil, fmt.Errorf("Unsupported database:%s", driver)
+		return nil, fmt.Errorf("Unsupported or unavailable database:%s", driver)
 	}
 
 	if err != nil {
-		return nil, err
+		//try to fallback to sqlite database
+		if *setts.DbDriver != sqlite {
+			db, err = initSqlite(setts)
+		}
+
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	log.Println("Successfully connected to DataBase!")
 
 	if debug {
