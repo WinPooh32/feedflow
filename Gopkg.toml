@@ -48,3 +48,11 @@
 [[constraint]]
   branch = "master"
   name = "github.com/foolin/gin-template"
+
+[[constraint]]
+  name = "github.com/go-session/session"
+  version = "3.1.2"
+
+[[constraint]]
+  name = "github.com/mattn/go-sqlite3"
+  version = "1.10.0"
