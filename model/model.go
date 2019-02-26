@@ -6,7 +6,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type model struct {
+//Model - used for embedding common database fields
+type Model struct {
 	ID        uint       `json:"id" gorm:"primary_key"`
 	DeletedAt *time.Time `json:"-" sql:"index"`
 }
@@ -14,10 +15,7 @@ type model struct {
 //MigrateModels - auto migrate orm models
 func MigrateModels(db *gorm.DB) {
 	db.AutoMigrate(
-		Error{},
-		LoginRequest{},
 		Tag{},
 		NewPageContent{},
-		SigninRequest{},
-		UploadImg{})
+		SigninRequest{})
 }
