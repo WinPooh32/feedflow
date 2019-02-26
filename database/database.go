@@ -6,6 +6,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+
+	//sqlite driver
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+
+	//mysql diver
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+
+	//postgres driver
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 const (
