@@ -46,12 +46,36 @@
   version = "v1.3.0"
 
 [[projects]]
+  digest = "1:ad53d1f710522a38d1f0e5e0a55a194b1c6b2cd8e84313568e43523271f0cf62"
+  name = "github.com/go-redis/redis"
+  packages = [
+    ".",
+    "internal",
+    "internal/consistenthash",
+    "internal/hashtag",
+    "internal/pool",
+    "internal/proto",
+    "internal/util",
+  ]
+  pruneopts = "UT"
+  revision = "22be8a3eaf992c828cecb69dc07348313bf08d2e"
+  version = "v6.15.1"
+
+[[projects]]
   digest = "1:3b1f1b1f5d75b678d33a4789531481db1d381e5cc01eedba3d4269e867bb0a60"
   name = "github.com/go-session/gin-session"
   packages = ["."]
   pruneopts = "UT"
   revision = "9e1b0b31cf8c04c1316a39261d2acaa3f6015f3a"
   version = "v3.0.0"
+
+[[projects]]
+  digest = "1:15d56171c5d5c540601294913bb33afe6779239f25635aca2ca2d29f7a36349f"
+  name = "github.com/go-session/redis"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a304dd2cd8fa50b57a1a8c507b5de196f9b97a85"
+  version = "v3.0.1"
 
 [[projects]]
   digest = "1:410db85c2cd935af48376003c8af1cda24d2c71858f570658dc93679136cb4e5"
@@ -179,6 +203,8 @@
     "github.com/gin-contrib/cors",
     "github.com/gin-gonic/gin",
     "github.com/go-session/gin-session",
+    "github.com/go-session/redis",
+    "github.com/go-session/session",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/jinzhu/gorm/dialects/postgres",

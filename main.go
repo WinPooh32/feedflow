@@ -15,12 +15,15 @@ import (
 	"github.com/WinPooh32/feedflow/database"
 	"github.com/WinPooh32/feedflow/model"
 	"github.com/WinPooh32/feedflow/web"
+	"github.com/jinzhu/gorm"
 
 	gintemplate "github.com/foolin/gin-template"
 	"github.com/fvbock/endless"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	ginsession "github.com/go-session/gin-session"
+	"github.com/go-session/redis"
+	"github.com/go-session/session"
 )
 
 type settings struct {
@@ -103,6 +106,17 @@ func routeStatic(router *gin.Engine, prefix string) {
 	router.StaticFile("/bundle.js", "./frontend/dist/bundle.js")
 }
 
+func initGoSession(db *gorm.DB) (store session.ManagerStore) {
+	store = redis.NewRedisStore(&redis.Options{
+		Addr: "127.0.0.1:6379",
+		DB:   15,
+	})
+
+	// store = gormstore.MustStoreWithDB(db, "go-session", 600)
+
+	return store
+}
+
 func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engine, func()) {
 	log.Println("Initialize gin router...")
 
@@ -117,18 +131,22 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engin
 	}, debug)
 
 	//setup middlewares
+	var sessionStore session.ManagerStore
+
 	if err != nil {
 		log.Println("Database error:", err)
 	} else {
 		router.Use(database.NewMiddleware(db))
 		model.MigrateModels(db)
+
+		sessionStore = initGoSession(db)
 	}
+
+	router.Use(ginsession.New(session.SetStore(sessionStore)))
 
 	if debug {
 		router.Use(cors.Default())
 	}
-
-	router.Use(ginsession.New())
 
 	//setup templates
 	initTemplateManager(router)
@@ -143,6 +161,10 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engin
 
 		if err := db.Close(); err != nil {
 			log.Println("Databas closing error:", err)
+		}
+
+		if err := sessionStore.Close(); err != nil {
+			log.Println("Session storage closing error:", err)
 		}
 	}
 }
