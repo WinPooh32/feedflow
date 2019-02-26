@@ -11,7 +11,7 @@ package model
 
 //NewPageContent model
 type NewPageContent struct {
-	model
+	Model
 
 	Title   string `json:"title"`
 	Content string `json:"content"`
@@ -20,7 +20,7 @@ type NewPageContent struct {
 
 //Tag model
 type Tag struct {
-	model
+	Model
 
 	Value            string
 	NewPageContentID uint `json:"-"`
