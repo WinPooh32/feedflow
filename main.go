@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"syscall"
 	"time"
@@ -108,8 +109,9 @@ func routeStatic(router *gin.Engine, prefix string) {
 
 func initGoSession(db *gorm.DB) (store session.ManagerStore) {
 	store = redis.NewRedisStore(&redis.Options{
-		Addr: "127.0.0.1:6379",
-		DB:   15,
+		Addr:     "127.0.0.1:6379",
+		DB:       15,
+		PoolSize: runtime.NumCPU(),
 	})
 
 	// store = gormstore.MustStoreWithDB(db, "go-session", 600)
