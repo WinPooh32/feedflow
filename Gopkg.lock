@@ -46,6 +46,30 @@
   version = "v1.3.0"
 
 [[projects]]
+  digest = "1:3b1f1b1f5d75b678d33a4789531481db1d381e5cc01eedba3d4269e867bb0a60"
+  name = "github.com/go-session/gin-session"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "9e1b0b31cf8c04c1316a39261d2acaa3f6015f3a"
+  version = "v3.0.0"
+
+[[projects]]
+  digest = "1:410db85c2cd935af48376003c8af1cda24d2c71858f570658dc93679136cb4e5"
+  name = "github.com/go-session/session"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5148957874831f27a7d95f708d41eff3d76ec658"
+  version = "v3.1.2"
+
+[[projects]]
+  digest = "1:ec6f9bf5e274c833c911923c9193867f3f18788c461f76f05f62bb1510e0ae65"
+  name = "github.com/go-sql-driver/mysql"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "72cd26f257d44c1114970e19afddcd812016007e"
+  version = "v1.4.1"
+
+[[projects]]
   digest = "1:6ba96a683441984156b05568b9d31dbc846d3336d21ac220fcc819a367dc1f65"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
@@ -53,10 +77,11 @@
   revision = "5a0f697c9ed9d68fef0116532c6e05cfeae00e55"
 
 [[projects]]
-  digest = "1:af20574f4a85d55078bae1840d00e6c1af65d18e8ae0ad5e199b03bd18902cd5"
+  digest = "1:ff312c4d510c67954a6fc6a11c9ff72a2b2169584776b7419c7b8c729e2b13ac"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
+    "dialects/mysql",
     "dialects/postgres",
     "dialects/sqlite",
   ]
@@ -123,6 +148,14 @@
   revision = "ec7b60b042fd2c54ad5ceaac0c891bd88843f4a2"
 
 [[projects]]
+  digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
+  name = "google.golang.org/appengine"
+  packages = ["cloudsql"]
+  pruneopts = "UT"
+  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
+  version = "v1.4.0"
+
+[[projects]]
   digest = "1:1b4724d3c8125f6044925f02b485b74bfec9905cbf579d95aafd1a6c8f8447d3"
   name = "gopkg.in/go-playground/validator.v8"
   packages = ["."]
@@ -145,10 +178,11 @@
     "github.com/fvbock/endless",
     "github.com/gin-contrib/cors",
     "github.com/gin-gonic/gin",
+    "github.com/go-session/gin-session",
     "github.com/jinzhu/gorm",
+    "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/jinzhu/gorm/dialects/sqlite",
-    "github.com/mattn/go-sqlite3",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
