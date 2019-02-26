@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/WinPooh32/feedflow/database"
@@ -103,7 +104,9 @@ func routeStatic(router *gin.Engine, prefix string) {
 	router.StaticFile("/bundle.js", "./frontend/dist/bundle.js")
 }
 
-func initRouter(router *gin.Engine, svSettings settings, debug bool) *gin.Engine {
+func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engine, func()) {
+	log.Println("Initialize gin router...")
+
 	db, err := database.Init(database.Credential{
 		Driver:   *svSettings.DbDriver,
 		Host:     *svSettings.DbHost,
@@ -136,7 +139,13 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) *gin.Engine
 	web.RouteWeb(router)
 	api.RouteAPI(router)
 
-	return router
+	return router, func() {
+		log.Println("Server shutdown!")
+
+		if err := db.Close(); err != nil {
+			log.Println("Databas closing error:", err)
+		}
+	}
 }
 
 func main() {
@@ -144,10 +153,28 @@ func main() {
 	svSettings := readSettings()
 
 	//Make new gin router
-	router := initRouter(gin.Default(), svSettings, debug)
+	router, onShutdown := initRouter(gin.Default(), svSettings, debug)
 
 	listenAt := fmt.Sprintf("%s:%s", *svSettings.Host, *svSettings.Port)
-	if err := endless.ListenAndServe(listenAt, router); err != nil {
+
+	srv := endless.NewServer(listenAt, router)
+
+	//Set hook for all signals
+	hookableSignals := []os.Signal{
+		syscall.SIGHUP,
+		syscall.SIGUSR1,
+		syscall.SIGUSR2,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGTSTP,
+	}
+
+	for _, sig := range hookableSignals {
+		srv.SignalHooks[endless.PRE_SIGNAL][sig] = append(srv.SignalHooks[endless.PRE_SIGNAL][sig], onShutdown)
+	}
+
+	//Start the http server
+	if err := srv.ListenAndServe(); err != nil {
 		log.Fatalln(err)
 	}
 }
