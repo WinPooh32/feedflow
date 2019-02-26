@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 const (
@@ -15,9 +14,20 @@ const (
 	sqlite   = "sqlite3"
 )
 
-func initPostgres(setts settings) (*gorm.DB, error) {
+//Credential - database connection information
+type Credential struct {
+	Driver   string
+	Host     string
+	Port     string
+	User     string
+	Database string
+	Password string
+	Ssl      bool
+}
+
+func initPostgres(cred Credential) (*gorm.DB, error) {
 	var sslmode string
-	if *setts.DbSsl {
+	if cred.Ssl {
 		sslmode = "enable"
 	} else {
 		sslmode = "disable"
@@ -25,38 +35,36 @@ func initPostgres(setts settings) (*gorm.DB, error) {
 
 	dbArgs := fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
-		*setts.DbHost, *setts.DbPort, *setts.DbUser,
-		*setts.DbName, *setts.DbPassword, sslmode)
+		cred.Host, cred.Port, cred.User,
+		cred.Database, cred.Password, sslmode)
 
-	db, err := gorm.Open(*setts.DbDriver, dbArgs)
+	db, err := gorm.Open(cred.Driver, dbArgs)
 	return db, err
 }
 
-func initSqlite(setts settings) (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite, *setts.DbName+"."+sqlite)
+func initSqlite(cred Credential) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite, cred.Database+"."+sqlite)
 	return db, err
 }
 
-func initDatabse(setts settings, debug bool) (*gorm.DB, error) {
-	var db *gorm.DB
-	var err error
-
+//Init - setup database connection if possible
+func Init(cred Credential, debug bool) (db *gorm.DB, err error) {
 	//Try to use any db if we can
-	switch driver := *setts.DbDriver; driver {
+	switch driver := cred.Driver; driver {
 	case postgres:
-		db, err = initPostgres(setts)
+		db, err = initPostgres(cred)
 	// case "mysql":
 	//TODO mysql initialization
 	case sqlite:
-		db, err = initSqlite(setts)
+		db, err = initSqlite(cred)
 	default:
 		return nil, fmt.Errorf("Unsupported or unavailable database:%s", driver)
 	}
 
 	if err != nil {
 		//try to fallback to sqlite database
-		if *setts.DbDriver != sqlite {
-			db, err = initSqlite(setts)
+		if cred.Driver != sqlite {
+			db, err = initSqlite(cred)
 		}
 
 		if err != nil {
@@ -81,8 +89,16 @@ func initDatabse(setts settings, debug bool) (*gorm.DB, error) {
 	return db, nil
 }
 
-func databaseMiddleware(db *gorm.DB) gin.HandlerFunc {
+//NewMiddleware creates new gin middleware for sharing database object
+func NewMiddleware(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("database", db)
 	}
+}
+
+//Extract - try to extract database object from gin context
+func Extract(ctx *gin.Context) (db *gorm.DB, ok bool) {
+	dbInterface, _ := ctx.Get("database")
+	db, ok = dbInterface.(*gorm.DB)
+	return db, ok
 }

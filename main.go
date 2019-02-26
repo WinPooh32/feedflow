@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/WinPooh32/feedflow/database"
+
 	"github.com/WinPooh32/feedflow/api"
 	"github.com/WinPooh32/feedflow/model"
 	"github.com/WinPooh32/feedflow/web"
@@ -18,6 +20,7 @@ import (
 	"github.com/fvbock/endless"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	ginsession "github.com/go-session/gin-session"
 )
 
 type settings struct {
@@ -101,12 +104,21 @@ func routeStatic(router *gin.Engine, prefix string) {
 }
 
 func initRouter(router *gin.Engine, svSettings settings, debug bool) *gin.Engine {
-	db, err := initDatabse(svSettings, debug)
+	db, err := database.Init(database.Credential{
+		Driver:   *svSettings.DbDriver,
+		Host:     *svSettings.DbHost,
+		Port:     *svSettings.DbPort,
+		User:     *svSettings.DbUser,
+		Database: *svSettings.DbName,
+		Password: *svSettings.DbPassword,
+		Ssl:      *svSettings.DbSsl,
+	}, debug)
 
+	//setup middlewares
 	if err != nil {
 		log.Println("Database error:", err)
 	} else {
-		router.Use(databaseMiddleware(db))
+		router.Use(database.NewMiddleware(db))
 		model.MigrateModels(db)
 	}
 
@@ -114,7 +126,12 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) *gin.Engine
 		router.Use(cors.Default())
 	}
 
+	router.Use(ginsession.New())
+
+	//setup templates
 	initTemplateManager(router)
+
+	//setup routes
 	routeStatic(router, "/assets")
 	web.RouteWeb(router)
 	api.RouteAPI(router)
