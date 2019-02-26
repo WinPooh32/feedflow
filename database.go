@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	postgresql = "postgres"
-	mysql      = "mysql"
-	sqlite     = "sqlite3"
+	postgres = "postgres"
+	mysql    = "mysql"
+	sqlite   = "sqlite3"
 )
 
 func initPostgres(setts settings) (*gorm.DB, error) {
@@ -43,7 +43,7 @@ func initDatabse(setts settings, debug bool) (*gorm.DB, error) {
 
 	//Try to use any db if we can
 	switch driver := *setts.DbDriver; driver {
-	case postgresql:
+	case postgres:
 		db, err = initPostgres(setts)
 	// case "mysql":
 	//TODO mysql initialization
