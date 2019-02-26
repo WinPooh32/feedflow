@@ -83,6 +83,6 @@ func initDatabse(setts settings, debug bool) (*gorm.DB, error) {
 
 func databaseMiddleware(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Set("DB", db)
+		c.Set("database", db)
 	}
 }
