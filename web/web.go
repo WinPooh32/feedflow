@@ -15,7 +15,7 @@ import (
 )
 
 func index(ctx *gin.Context) {
-	if db, ok := database.Extract(ctx); ok {
+	if db, ok := database.FromContext(ctx); ok {
 
 		db.First(model.NewPageContent{})
 

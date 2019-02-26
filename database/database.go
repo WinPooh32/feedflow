@@ -105,8 +105,8 @@ func NewMiddleware(db *gorm.DB) gin.HandlerFunc {
 	}
 }
 
-//Extract - try to extract database object from gin context
-func Extract(ctx *gin.Context) (db *gorm.DB, ok bool) {
+//FromContext - try to extract database object from gin context
+func FromContext(ctx *gin.Context) (db *gorm.DB, ok bool) {
 	dbInterface, _ := ctx.Get("database")
 	db, ok = dbInterface.(*gorm.DB)
 	return db, ok
