@@ -3,6 +3,8 @@ package web
 import (
 	"net/http"
 
+	"github.com/WinPooh32/feedflow/model"
+
 	"github.com/WinPooh32/feedflow/database"
 
 	gintemplate "github.com/foolin/gin-template"
@@ -10,7 +12,9 @@ import (
 )
 
 func index(ctx *gin.Context) {
-	if _, ok := database.Extract(ctx); ok {
+	if db, ok := database.Extract(ctx); ok {
+
+		db.First(model.NewPageContent{})
 
 		gintemplate.HTML(ctx, http.StatusOK, "index", gin.H{
 			"title": "Hello, web!",
