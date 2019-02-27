@@ -9,13 +9,34 @@
 
 package model
 
+import (
+	"github.com/jinzhu/gorm"
+)
+
 //SigninRequest model
 type SigninRequest struct {
 	Model
+	LoginRequest
 
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
+	Email string `json:"email" form:"email"`
 
-	Salt []byte
+	Salt         []byte
+	PasswordHash []byte
+}
+
+//ValidSigninRequest - validate SigninRequest
+func ValidSigninRequest(db *gorm.DB, sr SigninRequest) bool {
+
+	if len(sr.Password) < 10 {
+		return false
+	}
+
+	if !emailRegexp.MatchString(sr.Email) {
+		return false
+	}
+
+	var found SigninRequest
+	db.First(&found, "Username = ? OR Email = ?", sr.Username, sr.Email)
+
+	return found.ID == 0
 }

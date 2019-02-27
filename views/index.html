@@ -1,8 +1,12 @@
 {{define "content"}}
     Content!
-
+    <br>
     Your page hits: {{.hits}}
-
+    <br>
+    User id: {{.user_id}}
+    <br>
+    <a href="/signin">Sign in!</a>
+    <br>
+    <a href="/login">Log in!</a>
     <hr>
-    {{include "layouts/footer"}}
 {{end}}

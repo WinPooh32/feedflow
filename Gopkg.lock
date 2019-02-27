@@ -165,6 +165,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:9d5b5d543996dd584da1db1e0de1926f3e4c3a8dba0fa2f8db70f3ebee2342e0"
+  name = "golang.org/x/crypto"
+  packages = [
+    "bcrypt",
+    "blowfish",
+  ]
+  pruneopts = "UT"
+  revision = "7f87c0fbb88b590338857bcb720678c2583d4dea"
+
+[[projects]]
+  branch = "master"
   digest = "1:75e12c5cb2efb2da5d7f7054e973f09bd3e28c7da6b76dd7412b8f0151b23605"
   name = "golang.org/x/sys"
   packages = ["unix"]
@@ -209,6 +220,7 @@
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/jinzhu/gorm/dialects/sqlite",
+    "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

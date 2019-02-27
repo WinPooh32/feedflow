@@ -1,0 +1,16 @@
+{{define "content"}}
+
+<form action="/api/pages/signin" method="post">
+    <label for="POST-username">Username:</label>
+    <input id="POST-username" type="text" name="username">
+
+    <label for="POST-password">Password:</label>
+    <input id="POST-password" type="text" name="password">
+
+    <label for="POST-email">Email:</label>
+    <input id="POST-email" type="text" name="email">
+
+    <input type="submit" value="Save">
+  </form>
+  
+{{end}}

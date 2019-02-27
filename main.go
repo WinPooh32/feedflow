@@ -144,7 +144,9 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engin
 		sessionStore = initGoSession(db)
 	}
 
-	router.Use(ginsession.New(session.SetStore(sessionStore)))
+	sessionExpireOpt := session.SetExpired(24 * 60)
+	sessionStoreOpt := session.SetStore(sessionStore)
+	router.Use(ginsession.New(sessionStoreOpt, sessionExpireOpt))
 
 	if debug {
 		router.Use(cors.Default())

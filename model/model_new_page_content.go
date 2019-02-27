@@ -23,5 +23,5 @@ type Tag struct {
 	Model
 
 	Value            string
-	NewPageContentID uint `json:"-"`
+	NewPageContentID uint64 `json:"-"`
 }

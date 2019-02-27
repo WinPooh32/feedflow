@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/WinPooh32/feedflow/model"
 	ginsession "github.com/go-session/gin-session"
 
 	"github.com/WinPooh32/feedflow/database"
@@ -15,9 +14,9 @@ import (
 )
 
 func index(ctx *gin.Context) {
-	if db, ok := database.FromContext(ctx); ok {
+	if _, ok := database.FromContext(ctx); ok {
 
-		db.First(model.NewPageContent{})
+		// db.First(model.NewPageContent{})
 
 		store := ginsession.FromContext(ctx)
 
@@ -32,6 +31,8 @@ func index(ctx *gin.Context) {
 		hits++
 		store.Set("visit_hits", hits)
 
+		userID, ok := store.Get("user_id")
+
 		err := store.Save()
 		if err != nil {
 			ctx.AbortWithError(500, err)
@@ -39,12 +40,21 @@ func index(ctx *gin.Context) {
 		}
 
 		gintemplate.HTML(ctx, http.StatusOK, "index", gin.H{
-			"title": "Hello, web!",
-			"hits":  hits,
+			"title":   "Hello, web!",
+			"hits":    hits,
+			"user_id": userID,
 		})
 	} else {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 	}
+}
+
+func signin(ctx *gin.Context) {
+	gintemplate.HTML(ctx, http.StatusOK, "signin", gin.H{})
+}
+
+func login(ctx *gin.Context) {
+	gintemplate.HTML(ctx, http.StatusOK, "login", gin.H{})
 }
 
 func notFound(ctx *gin.Context) {
