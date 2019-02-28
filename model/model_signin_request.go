@@ -15,7 +15,7 @@ import (
 
 //SigninRequest model
 type SigninRequest struct {
-	Model
+	Base
 	LoginRequest
 
 	Email string `json:"email" form:"email"`
@@ -25,7 +25,7 @@ type SigninRequest struct {
 }
 
 //ValidSigninRequest - validate SigninRequest
-func ValidSigninRequest(db *gorm.DB, sr SigninRequest) bool {
+func ValidSigninRequest(db *gorm.DB, sr *SigninRequest) bool {
 
 	if len(sr.Password) < 10 {
 		return false

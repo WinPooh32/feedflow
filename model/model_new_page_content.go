@@ -11,7 +11,7 @@ package model
 
 //NewPageContent model
 type NewPageContent struct {
-	Model
+	Base
 
 	Title   string `json:"title"`
 	Content string `json:"content"`
@@ -20,8 +20,27 @@ type NewPageContent struct {
 
 //Tag model
 type Tag struct {
-	Model
+	BaseNoJSON
 
-	Value            string
+	Value            string `json:"value"`
 	NewPageContentID uint64 `json:"-"`
+}
+
+//ValidNewPageContent - checks limits for a new page content
+func ValidNewPageContent(pagecontent *NewPageContent) bool {
+	size := len(pagecontent.Title)
+	if size < 3 || size > 255 {
+		return false
+	}
+
+	size = len(pagecontent.Content)
+	if size < 2 || size > 20000 {
+		return false
+	}
+
+	if len(pagecontent.Tags) > 20 {
+		return false
+	}
+
+	return true
 }
