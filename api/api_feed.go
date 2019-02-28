@@ -11,11 +11,35 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
+	"github.com/WinPooh32/feedflow/model"
+
+	"github.com/WinPooh32/feedflow/database"
 	"github.com/gin-gonic/gin"
 )
 
 // RequestChunk - Return next feed data chunk.
-func RequestChunk(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+func RequestChunk(ctx *gin.Context) {
+	db, ok := database.FromContext(ctx)
+	if !ok {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	since, _ := strconv.Atoi(ctx.Query("since"))
+
+	const chunkSize = 10
+
+	if since < 0 || since%chunkSize != 0 {
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	pages := make([]model.NewPageContent, 0, chunkSize)
+
+	scope := db.Set("gorm:auto_preload", true).Order("id DESC")
+	scope.Offset(since).Limit(chunkSize).Find(&pages)
+
+	ctx.JSON(http.StatusOK, pages)
 }
