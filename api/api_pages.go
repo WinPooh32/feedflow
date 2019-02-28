@@ -23,8 +23,22 @@ import (
 )
 
 // Add - Add a new page.
-func Add(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+func Add(ctx *gin.Context) {
+	pagecontent := model.NewPageContent{Tags: make([]model.Tag, 0)}
+
+	db, ok := database.FromContext(ctx)
+	if !ok {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	if ctx.ShouldBind(&pagecontent) == nil && model.ValidNewPageContent(&pagecontent) {
+		db.Create(&pagecontent)
+		ctx.Status(http.StatusOK)
+		return
+	}
+
+	ctx.AbortWithStatus(http.StatusNotAcceptable)
 }
 
 // ImgUpload - Upload a new image.
@@ -48,7 +62,7 @@ func Signin(ctx *gin.Context) {
 	}
 
 	if ctx.ShouldBind(&person) == nil &&
-		model.ValidSigninRequest(db, person) {
+		model.ValidSigninRequest(db, &person) {
 
 		salt := make([]byte, 8)
 		_, err := rand.Read(salt)
