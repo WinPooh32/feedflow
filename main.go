@@ -16,7 +16,6 @@ import (
 	"github.com/WinPooh32/feedflow/database"
 	"github.com/WinPooh32/feedflow/model"
 	"github.com/WinPooh32/feedflow/web"
-	"github.com/jinzhu/gorm"
 
 	gintemplate "github.com/foolin/gin-template"
 	"github.com/fvbock/endless"
@@ -107,7 +106,7 @@ func routeStatic(router *gin.Engine, prefix string) {
 	router.StaticFile("/bundle.js", "./frontend/dist/bundle.js")
 }
 
-func initGoSession(db *gorm.DB) (store session.ManagerStore) {
+func initGoSession() (store session.ManagerStore) {
 	store = redis.NewRedisStore(&redis.Options{
 		Addr:     "127.0.0.1:6379",
 		DB:       15,
@@ -140,12 +139,10 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engin
 	} else {
 		router.Use(database.NewMiddleware(db))
 		model.MigrateModels(db)
-
-		sessionStore = initGoSession(db)
 	}
 
-	sessionExpireOpt := session.SetExpired(24 * 60)
-	sessionStoreOpt := session.SetStore(sessionStore)
+	sessionExpireOpt := session.SetExpired(24 * 60 * 60) // 24 hours
+	sessionStoreOpt := session.SetStore(initGoSession())
 	router.Use(ginsession.New(sessionStoreOpt, sessionExpireOpt))
 
 	if debug {

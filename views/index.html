@@ -1,12 +1,31 @@
 {{define "content"}}
-    Content!
-    <br>
-    Your page hits: {{.hits}}
-    <br>
-    User id: {{.user_id}}
-    <br>
-    <a href="/signin">Sign in!</a>
-    <br>
-    <a href="/login">Log in!</a>
-    <hr>
+<div class="row">
+    <div class="col-sm-8 order-2 order-md-1 order-sm-2">
+            <!-- style="padding-left: 10px; padding-right: 10px" -->
+        <div style="padding: 0px 10px 0px 10px;"><p><h4>Зачем мне 42 мегапикселя? Делать селфи!</h4></p>
+        <p>Часто на фотопабликах задаются вопросом: зачем у фотоаппаратов так много мегапикселей? У моего, например, 42. Оказывается это чтобы делать селфи!</p>
+        Берем фоткаем, ну скажем, белку</p></div>
+        
+        <img src="https://cs8.pikabu.ru/post_img/2019/02/26/4/155115775311658542.jpg" class="img-fluid" alt="Responsive image"></img>
+
+        <div style="padding: 0px 10px 0px 10px;"><p>Потом берем увеличиваем</p></div>
+         
+         <hr/></div>
+    <div class="col-sm-4 order-1 order-md-1 order-sm-2">
+            <ul class="nav flex-column">
+                    <li class="nav-item">
+                      <a class="nav-link active" href="#">Active</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                  </ul>
+    </div>
+</div>
 {{end}}

@@ -6,7 +6,12 @@
     {{include "layouts/head"}}
 </head>
 <body>
-    {{template "content" .}}
-    {{include "layouts/footer"}}
+    <div class="container">
+        {{include "layouts/navbar"}}
+        {{template "content" .}}
+        {{include "layouts/footer"}}
+    </div>    
+
+    {{template "bootstrapScripts" .}}
 </body>
 </html>
