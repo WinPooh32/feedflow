@@ -177,10 +177,8 @@ func main() {
 	debug := gin.Mode() == gin.DebugMode
 	svSettings := readSettings()
 
-	gin.SetMode(gin.ReleaseMode)
-
 	//Make new gin router
-	router, onShutdown := initRouter(gin.New(), svSettings, debug)
+	router, onShutdown := initRouter(gin.Default(), svSettings, debug)
 
 	listenAt := fmt.Sprintf("%s:%s", *svSettings.Host, *svSettings.Port)
 
