@@ -26,4 +26,6 @@ func MigrateModels(db *gorm.DB) {
 		Tag{},
 		NewPageContent{},
 		SigninRequest{})
+
+	db.Exec("CREATE INDEX signin_request_index ON signin_request USING hash (username);")
 }

@@ -55,7 +55,7 @@ func Signin(ctx *gin.Context) {
 
 		if err == nil {
 			mixed := append([]byte(person.Password), salt...)
-			hash, _ := bcrypt.GenerateFromPassword(mixed, bcrypt.DefaultCost)
+			hash, _ := bcrypt.GenerateFromPassword(mixed, bcrypt.MinCost+2)
 
 			person.Salt = salt
 			person.PasswordHash = hash
