@@ -4,13 +4,23 @@
 <head>
     <title>{{.title}}</title>
     {{include "layouts/head"}}
+
 </head>
 <body>
-    <div class="container">
-        {{include "layouts/navbar"}}
-        {{template "content" .}}
-        {{include "layouts/footer"}}
-    </div>    
+    <div class="container-fluid FlexItem p-0 m-0 fill">
+        
+        <div class="container-fluid bg-dark text-light">
+                {{include "layouts/navbar"}}
+        </div>
+        
+        <div class="container flex-grow-1">
+            {{template "content" .}}
+        </div>
+        
+        <footer class="container-fluid bg-dark text-light mt-4">
+                {{include "layouts/footer"}}
+        </footer>
+    </div>  
 
     {{template "bootstrapScripts" .}}
 </body>

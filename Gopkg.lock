@@ -4,6 +4,14 @@
 [[projects]]
   branch = "master"
   digest = "1:56c69e124c07977fd63e910f0812fddc5af475a8d2007dbf78803b3ef6a9ee3e"
+  name = "github.com/WinPooh32/gin-template"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "089e62d1d723b168b89e8dbb0e823228b7366358"
+
+[[projects]]
+  branch = "master"
+  digest = "1:56c69e124c07977fd63e910f0812fddc5af475a8d2007dbf78803b3ef6a9ee3e"
   name = "github.com/foolin/gin-template"
   packages = ["."]
   pruneopts = "UT"
@@ -157,6 +165,14 @@
   version = "v1.10.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:0e1be621cd92adbfb7b298598db9f3740844fe548eda6911425d1ad903a5d508"
+  name = "github.com/tywkeene/go-fsevents"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e9e014604d244a42efffbbfac0142be3247dfdb3"
+
+[[projects]]
   digest = "1:c268acaa4a4d94a467980e5e91452eb61c460145765293dc0aed48e5e9919cc6"
   name = "github.com/ugorji/go"
   packages = ["codec"]
@@ -209,6 +225,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/WinPooh32/gin-template",
     "github.com/foolin/gin-template",
     "github.com/fvbock/endless",
     "github.com/gin-contrib/cors",
@@ -220,6 +237,7 @@
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/jinzhu/gorm/dialects/sqlite",
+    "github.com/tywkeene/go-fsevents",
     "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"

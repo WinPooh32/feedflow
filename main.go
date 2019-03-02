@@ -17,7 +17,7 @@ import (
 	"github.com/WinPooh32/feedflow/model"
 	"github.com/WinPooh32/feedflow/web"
 
-	gintemplate "github.com/foolin/gin-template"
+	gintemplate "github.com/WinPooh32/gin-template"
 	"github.com/fvbock/endless"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -85,8 +85,8 @@ func listPartials(viewsPath, partialsPath, fileExtension string) []string {
 }
 
 func initTemplateManager(router *gin.Engine) {
-	//new template engine
-	router.HTMLRender = gintemplate.New(gintemplate.TemplateConfig{
+
+	config := gintemplate.TemplateConfig{
 		Root:      "views",
 		Extension: ".html",
 		Master:    "layouts/master",
@@ -96,8 +96,11 @@ func initTemplateManager(router *gin.Engine) {
 				return time.Now().Format("2006")
 			},
 		},
-		DisableCache: true,
-	})
+		DisableCache: false,
+	}
+
+	//new template engine
+	router.HTMLRender = gintemplate.New(config)
 }
 
 func routeStatic(router *gin.Engine, prefix string) {
