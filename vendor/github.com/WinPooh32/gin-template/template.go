@@ -19,6 +19,7 @@ import (
 	"html/template"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -27,12 +28,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
+	"github.com/tywkeene/go-fsevents"
 )
 
 var (
 	htmlContentType   = []string{"text/html; charset=utf-8"}
 	templateEngineKey = "github.com/foolin/gin-template/templateEngine"
-	DefaultConfig = TemplateConfig{
+	DefaultConfig     = TemplateConfig{
 		Root:         "views",
 		Extension:    ".html",
 		Master:       "layouts/master",
@@ -44,10 +46,13 @@ var (
 )
 
 type TemplateEngine struct {
-	config   TemplateConfig
-	tplMap   map[string]*template.Template
-	tplMutex sync.RWMutex
+	config      TemplateConfig
+	tplMap      map[string]*template.Template
+	tplMutex    sync.RWMutex
 	fileHandler FileHandler
+
+	cacheReset bool
+	cacheMutex sync.RWMutex
 }
 
 type TemplateRender struct {
@@ -73,13 +78,48 @@ type Delims struct {
 
 type FileHandler func(config TemplateConfig, tplFile string) (content string, err error)
 
-func New(config TemplateConfig) *TemplateEngine {
-	return &TemplateEngine{
-		config:   config,
-		tplMap:   make(map[string]*template.Template),
-		tplMutex: sync.RWMutex{},
-		fileHandler: DefaultFileHandler(),
+func handleFsEvents(watcher *fsevents.Watcher, e *TemplateEngine) {
+	watcher.StartAll()
+	go watcher.Watch()
+
+	for {
+		select {
+		case <-watcher.Events:
+			e.cacheMutex.Lock()
+			e.cacheReset = true
+			e.cacheMutex.Unlock()
+		case err := <-watcher.Errors:
+			log.Println(err)
+		}
 	}
+}
+
+func New(config TemplateConfig) *TemplateEngine {
+	e := &TemplateEngine{
+		config:      config,
+		tplMap:      make(map[string]*template.Template),
+		tplMutex:    sync.RWMutex{},
+		fileHandler: DefaultFileHandler(),
+
+		cacheReset: false,
+		cacheMutex: sync.RWMutex{},
+	}
+
+	options := &fsevents.WatcherOptions{
+		Recursive:       true,
+		UseWatcherFlags: true,
+	}
+
+	inotifyFlags := fsevents.Delete | fsevents.Create | fsevents.IsDir |
+		fsevents.Modified | fsevents.MovedTo | fsevents.Modified
+
+	if w, err := fsevents.NewWatcher(config.Root, inotifyFlags, options); err == nil {
+		go handleFsEvents(w, e)
+	} else {
+		log.Println(err)
+	}
+
+	return e
 }
 
 func Default() *TemplateEngine {
@@ -129,10 +169,21 @@ func (e *TemplateEngine) executeRender(out io.Writer, name string, data interfac
 		name = strings.TrimSuffix(name, e.config.Extension)
 
 	}
-	return e.executeTemplate(out, name, data, useMaster)
+
+	e.cacheMutex.RLock()
+	reset := e.cacheReset
+	e.cacheMutex.RUnlock()
+
+	err := e.executeTemplate(out, name, data, useMaster, reset)
+
+	e.cacheMutex.Lock()
+	e.cacheReset = false
+	e.cacheMutex.Unlock()
+
+	return err
 }
 
-func (e *TemplateEngine) executeTemplate(out io.Writer, name string, data interface{}, useMaster bool) error {
+func (e *TemplateEngine) executeTemplate(out io.Writer, name string, data interface{}, useMaster bool, resetCache bool) error {
 	var tpl *template.Template
 	var err error
 	var ok bool
@@ -140,7 +191,7 @@ func (e *TemplateEngine) executeTemplate(out io.Writer, name string, data interf
 	allFuncs := make(template.FuncMap, 0)
 	allFuncs["include"] = func(layout string) (template.HTML, error) {
 		buf := new(bytes.Buffer)
-		err := e.executeTemplate(buf, layout, data, false)
+		err := e.executeTemplate(buf, layout, data, false, resetCache)
 		return template.HTML(buf.String()), err
 	}
 
@@ -158,7 +209,7 @@ func (e *TemplateEngine) executeTemplate(out io.Writer, name string, data interf
 		exeName = e.config.Master
 	}
 
-	if !ok || e.config.DisableCache {
+	if !ok || e.config.DisableCache || resetCache {
 		tplList := make([]string, 0)
 		if useMaster {
 			//render()
