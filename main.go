@@ -135,8 +135,6 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engin
 	}, debug)
 
 	//setup middlewares
-	var sessionStore session.ManagerStore
-
 	if err != nil {
 		log.Println("Database error:", err)
 	} else {
@@ -144,8 +142,9 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engin
 		model.MigrateModels(db)
 	}
 
+	sessionStore := initGoSession()
 	sessionExpireOpt := session.SetExpired(24 * 60 * 60) // 24 hours
-	sessionStoreOpt := session.SetStore(initGoSession())
+	sessionStoreOpt := session.SetStore(sessionStore)
 	router.Use(ginsession.New(sessionStoreOpt, sessionExpireOpt))
 
 	if debug {
@@ -161,15 +160,29 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engin
 	api.RouteAPI(router)
 
 	return router, func() {
+		recovery := func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered in shutdown", r)
+			}
+		}
+
 		log.Println("Server shutdown!")
 
-		if err := db.Close(); err != nil {
-			log.Println("Databas closing error:", err)
-		}
+		func() {
+			defer recovery()
+			log.Println("Session storage shutdown!")
+			if err := sessionStore.Close(); err != nil {
+				log.Println("Session storage closing error:", err)
+			}
+		}()
 
-		if err := sessionStore.Close(); err != nil {
-			log.Println("Session storage closing error:", err)
-		}
+		func() {
+			defer recovery()
+			log.Println("Databse shutdown!")
+			if err := db.Close(); err != nil {
+				log.Println("Databas closing error:", err)
+			}
+		}()
 	}
 }
 
