@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"html/template"
@@ -29,6 +30,7 @@ import (
 type settings struct {
 	Port *string
 	Host *string
+	Ssl  *string
 
 	DbHost     *string
 	DbPort     *string
@@ -44,6 +46,7 @@ func readSettings() settings {
 
 	s.Host = flag.String("host", "localhost", "listening server ip")
 	s.Port = flag.String("port", "8080", "listening port")
+	s.Ssl = flag.String("ssl", "", "cert;private")
 
 	s.DbHost = flag.String("dbhost", "localhost", "listening database server ip")
 	s.DbPort = flag.String("dbport", "5432", "listening database port")
@@ -105,8 +108,9 @@ func initTemplateManager(router *gin.Engine) {
 
 func routeStatic(router *gin.Engine, prefix string) {
 	router.Static(prefix, "./assets")
+	router.Static("js", "./frontend/dist/js")
+	router.Static("css", "./frontend/dist/css")
 	// router.StaticFS("/more_static", http.Dir("my_file_system"))
-	router.StaticFile("/bundle.js", "./frontend/dist/bundle.js")
 }
 
 func initGoSession() (store session.ManagerStore) {
@@ -212,7 +216,19 @@ func main() {
 	}
 
 	//Start the http server
-	if err := srv.ListenAndServe(); err != nil {
+	var err error
+	if len(*svSettings.Ssl) == 0 {
+		err = srv.ListenAndServe()
+	} else {
+		tlsConf := &tls.Config{}
+		tlsConf.NextProtos = []string{"h2", "http/1.1"}
+		srv.Server.TLSConfig = tlsConf
+
+		keys := strings.Split(*svSettings.Ssl, ";")
+		err = srv.ListenAndServeTLS(keys[0], keys[1])
+	}
+
+	if err != nil {
 		log.Fatalln(err)
 	}
 }
