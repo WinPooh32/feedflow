@@ -21,6 +21,7 @@ import (
 	gintemplate "github.com/WinPooh32/gin-template"
 	"github.com/fvbock/endless"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	ginsession "github.com/go-session/gin-session"
 	"github.com/go-session/redis"
@@ -31,6 +32,7 @@ type settings struct {
 	Port *string
 	Host *string
 	Ssl  *string
+	Gzip *bool
 
 	DbHost     *string
 	DbPort     *string
@@ -47,6 +49,7 @@ func readSettings() settings {
 	s.Host = flag.String("host", "localhost", "listening server ip")
 	s.Port = flag.String("port", "8080", "listening port")
 	s.Ssl = flag.String("ssl", "", "cert;private")
+	s.Gzip = flag.Bool("gzip", false, "gzip compression")
 
 	s.DbHost = flag.String("dbhost", "localhost", "listening database server ip")
 	s.DbPort = flag.String("dbport", "5432", "listening database port")
@@ -139,6 +142,10 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engin
 	}, debug)
 
 	//setup middlewares
+	if *svSettings.Gzip {
+		router.Use(gzip.Gzip(gzip.BestSpeed))
+	}
+
 	if err != nil {
 		log.Println("Database error:", err)
 	} else {
