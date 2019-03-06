@@ -39,6 +39,7 @@ func index(ctx *gin.Context) {
 			return
 		}
 
+		// ctx.Header("Content-Type", "text/html; charset=utf-8") // You have to set 'Content-Type'
 		gintemplate.HTML(ctx, http.StatusOK, "index", gin.H{
 			"title":   "Hello, web!",
 			"hits":    hits,

@@ -261,6 +261,7 @@ func (e *TemplateEngine) SetFileHandler(handle FileHandler) {
 }
 
 func (r TemplateRender) Render(w http.ResponseWriter) error {
+	r.WriteContentType(w)
 	return r.Engine.executeRender(w, r.Name, r.Data)
 }
 

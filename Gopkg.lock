@@ -3,11 +3,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:b9d117721c364570fdd2c923047eebb559944afd68970ef250a59174bcf7086f"
+  digest = "1:1bb37d2c396f3987be0c4a2f60d556fea8869e655612665785d5457385c80fa1"
   name = "github.com/WinPooh32/gin-template"
   packages = ["."]
   pruneopts = "UT"
-  revision = "118510cdfa958256158f2bed3a23edec3173173d"
+  revision = "a36946e85c415b2c7747636eb0355edee25391a4"
 
 [[projects]]
   branch = "master"
@@ -32,6 +32,14 @@
   pruneopts = "UT"
   revision = "cf4846e6a636a76237a28d9286f163c132e841bc"
   version = "v1.2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:a450b5d2f2c5f0ae6636a5914cbfbfe4b36c55396fbae95478676e7f69adec98"
+  name = "github.com/gin-contrib/gzip"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b07653c4b4b188bf0af293ae44b72e7ac9623a17"
 
 [[projects]]
   branch = "master"
@@ -212,11 +220,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a2bc6cb1f4e1d0b512e1d47d392ead580006b5bdade6ffde16271759fe609b34"
+  digest = "1:f96e48fc7b2d4992742749bf96f6247fb1d2346672aec5300dc29c06ab7da061"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "b6889370fb1098ed892bd3400d189bb6a3355813"
+  revision = "a98ae47d97a5abb3a3e9045da36315f9f8312970"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
@@ -250,6 +258,7 @@
     "github.com/foolin/gin-template",
     "github.com/fvbock/endless",
     "github.com/gin-contrib/cors",
+    "github.com/gin-contrib/gzip",
     "github.com/gin-gonic/gin",
     "github.com/go-session/gin-session",
     "github.com/go-session/redis",
