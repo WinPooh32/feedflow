@@ -4,7 +4,7 @@
   "description": "",
   "main": "ts/index.ts",
   "scripts": {
-    "watch": "webpack --watch",
+    "watch": "webpack --watch --mode development",
     "build:dev": "webpack --mode development",
     "build": "webpack --mode production",
     "build-bootstrap-js": "npm explore bootstrap -- npm run js-minify-standalone",
