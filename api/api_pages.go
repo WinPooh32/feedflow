@@ -61,37 +61,44 @@ func Signin(ctx *gin.Context) {
 		return
 	}
 
-	if ctx.ShouldBind(&person) == nil &&
-		model.ValidSigninRequest(db, &person) {
-
-		salt := make([]byte, 8)
-		_, err := rand.Read(salt)
-
-		if err == nil {
-			mixed := append([]byte(person.Password), salt...)
-			hash, _ := bcrypt.GenerateFromPassword(mixed, bcrypt.MinCost+2)
-
-			person.Salt = salt
-			person.PasswordHash = hash
-			person.DeletedAt = nil // gorm sets time for form post
-
-			db.Create(&person)
-
-			store := ginsession.FromContext(ctx)
-			store.Set("user_id", person.ID)
-
-			err := store.Save()
-			if err != nil {
-				ctx.AbortWithError(http.StatusInternalServerError, err)
-				return
-			}
-
-			ctx.Status(http.StatusOK)
-			return
-		}
+	//Try to bind form data to person
+	if err := ctx.ShouldBind(&person); err != nil || !model.ValidSigninRequest(db, &person) {
+		ctx.AbortWithStatus(http.StatusNotAcceptable)
+		return
 	}
 
-	ctx.AbortWithStatus(http.StatusNotAcceptable)
+	//Generate random salt using crypto/rand
+	salt := make([]byte, 8)
+	if _, err := rand.Read(salt); err != nil {
+		ctx.AbortWithStatus(http.StatusNotAcceptable)
+		return
+	}
+
+	//Concatinate user password and salt
+	saltedHash := append([]byte(person.Password), salt...)
+
+	//Calc slated password hash
+	hash, err := bcrypt.GenerateFromPassword(saltedHash, bcrypt.MinCost+2)
+	if err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	person.Salt = salt
+	person.PasswordHash = hash
+	person.DeletedAt = nil // gorm sets time for form post
+
+	db.Create(&person)
+
+	store := ginsession.FromContext(ctx)
+	store.Set("user_id", person.ID)
+
+	if err := store.Save(); err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.Status(http.StatusOK)
 }
 
 // Login - Logs in and returns the authentication cookie.
@@ -99,37 +106,55 @@ func Login(ctx *gin.Context) {
 	var form model.LoginRequest
 	var person model.SigninRequest
 
+	//Check user session previlegies, escape if privileged
+	store := ginsession.FromContext(ctx)
+	rawID, ok := store.Get("user_id")
+
+	if ok && rawID.(float64) != 0 {
+		//User has been already logged in
+		ctx.Status(http.StatusOK)
+		return
+	}
+
 	db, ok := database.FromContext(ctx)
 	if !ok {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	if ctx.ShouldBind(&form) == nil {
-		db.First(&person, "username = ?", form.Username)
-
-		if person.ID != 0 {
-			mixed := append([]byte(form.Password), person.Salt...)
-
-			if bcrypt.CompareHashAndPassword(person.PasswordHash, mixed) == nil {
-				store := ginsession.FromContext(ctx)
-
-				hits, _ := store.Get("visit_hits")
-				store.Flush()
-
-				store.Set("visit_hits", hits)
-				store.Set("user_id", person.ID)
-				err := store.Save()
-				if err != nil {
-					ctx.AbortWithError(http.StatusInternalServerError, err)
-					return
-				}
-
-				ctx.Status(http.StatusOK)
-				return
-			}
-		}
+	//Try to bind form data
+	if ctx.ShouldBind(&form) != nil {
+		ctx.AbortWithStatus(http.StatusNotAcceptable)
+		return
 	}
 
-	ctx.AbortWithStatus(http.StatusNotAcceptable)
+	//Select person from database
+	db.First(&person, "username = ?", form.Username)
+	if person.ID == 0 {
+		ctx.AbortWithStatus(http.StatusNotAcceptable)
+		return
+	}
+
+	//Concatinate user password and salt
+	salted := append([]byte(form.Password), person.Salt...)
+
+	if err := bcrypt.CompareHashAndPassword(person.PasswordHash, salted); err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	//Upgrade user session previlegies
+	hits, _ := store.Get("visit_hits")
+	store.Flush()
+
+	store.Set("visit_hits", hits)
+	store.Set("user_id", person.ID)
+
+	err := store.Save()
+	if err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.Status(http.StatusOK)
 }
