@@ -1,127 +1,22 @@
 {{define "content"}}
-<script>
-  function collapsef(id){
-    $('#collapse'+id).removeClass("content-card");
-    $('#grad'+id).remove();
-    $('#morebar'+id).remove();
-  }  
-</script>
-
-<div class="row p-md-0 p-sm-0 FlexContainer">
-  
-  <div class="p-lg-0 p-md-0 p-sm-0 col-no-padding col-sm-8 order-2 order-md-1 order-sm-2">
-    <div class="floatMaterial p-lg-0 p-md-0 p-sm-0  mt-4">
-      <div class="content-card"  id="collapse1">
-        <div class="pl-4 pr-4 pb-2 pt-2"> <h3><a href="#" class="font-weight-bold">Зачем мне 42 мегапикселя? Делать селфи!</a></h3></div>
-        <div class="pl-4 pr-4 pb-2"> Часто на фотопабликах задаются вопросом: зачем у фотоаппаратов так много мегапикселей? У моего, например, 42. Оказывается это чтобы делать селфи! Берем фоткаем, ну скажем, белку</div>
-        
-        <img src="/assets/img/belka.jpg" class="img-max-w" alt="Responsive image"></img>
-        <div class="pl-4 pr-4 pb-2">Потом берем увеличиваем</div>
-        <div class="pl-4 pr-4 pb-2">Когда в очередной раз на обслуживание приехал инженер, Леха пообщался с ним по поводу дальнейшего трудоустройства в их фирму. Связались с начальством, и те пригласили его на работу!</div>
-        <div class="pl-4 pr-4 pb-2">Написал он заявление, и пошел отрабатывать положенные две недели. Кадровики узнали про это дело. Вызывает его начальник кадров. Мол, зачем сразу так делать-то?! Давай оставайся, мы для тебя целый отдел создадим и сделаем тебя начальником! Леха поблагодарил их конечно, но своего решения менять не стал.</div>
-      </div>
-      
-      <div class="grad" id="grad1"></div>
-      <div class="subcard p-2 bg-light" id="morebar1">
-        <button class="btn btn-light btn-block text-left" type="button" onclick="collapsef(1);">
-          Подробнее...
-        </button>
-      </div>
-  
-    </div>
-    
-    
-    <div class="floatMaterial p-lg-0 p-md-0 p-sm-0 mt-4">
-      
-      <div class="content-card"  id="collapse2">
-        <div class="pl-4 pr-4 pb-2 pt-2"> <h3><a href="#" class="font-weight-bold">Эффективные менеджеры</a></h3></div>
-        <div class="pl-4 pr-4 pb-2">Эффективные менеджеры добрались и до нас. И вот какая история приключилась.</div>
-        <div class="pl-4 pr-4 pb-2">Завод потихоньку начинает покупать станки с ЧПУ. Потихоньку обучают операторов, а вот обслуживающего эти станки персонала пока что своего нет. Каждый раз вызывают инженера из Москвы. </div>
-        
-        <div class="pl-4 pr-4 pb-2">Один из операторов, пусть будет Леха, поднахватался у этих инженеров знаний, плюс самообразованием занимался, и стал довольно хорошо в этом всем разбираться. </div>
-        <div class="pl-4 pr-4 pb-2">Пошел Леха к руководству с предложение отправить его на дополнительные курсы, и у завода был бы свой специалист.Ты вот съездить на учебу, и убежишь от нас говорят ему. Иди и работай дальше, нас и так всё устраивает.</div>
-        <div class="pl-4 pr-4 pb-2">Когда в очередной раз на обслуживание приехал инженер, Леха пообщался с ним по поводу дальнейшего трудоустройства в их фирму. Связались с начальством, и те пригласили его на работу!</div>
-        <div class="pl-4 pr-4 pb-2">Написал он заявление, и пошел отрабатывать положенные две недели. Кадровики узнали про это дело. Вызывает его начальник кадров. Мол, зачем сразу так делать-то?! Давай оставайся, мы для тебя целый отдел создадим и сделаем тебя начальником! Леха поблагодарил их конечно, но своего решения менять не стал.</div>
-        <div class="pl-4 pr-4 pb-2"> И знаете что сделали кадровики?! Они не придумали ничего лучше, как позвонить новым работодателям Лехи, и потребовать, чтоб они не брали его на работу! Надо сказать, что у нас в городе это довольно часто практикуется. Все друг друга знают, и таким способом пытаются придержать людей на рабочих местах.</div>
-        <div class="pl-4 pr-4 pb-2">Но в итоге заводских кадровиков послали. И были очень удивлены, почему кто-то пытается им ставить условиях.</div>
-        <div class="pl-4 pr-4 pb-2">А у Лехи впереди стажировка в Германии, чему он крайне рад.</div>
-      </div>
-      
-      <div class="grad" id="grad2"></div>
-      <div class="subcard p-2 bg-light" id="morebar2">
-        <button class="btn btn-light btn-block text-left" type="button" onclick="collapsef(2);">
-          Подробнее...
-        </button>
-      </div>
-      
-    </div>
-    
-    <div class="floatMaterial p-lg-0 p-md-0 p-sm-0  mt-4">
-      
-      <div class="content-card"  id="collapse3">
-        <div class="pl-4 pr-4 pb-2 pt-2"> <h3><a href="#" class="font-weight-bold">Пространство генерации и пространство возможностей</a></h3></div>
-        <div class="pl-4 pr-4 pb-2">В этом туториале я расскажу о двух терминах, которые используются мной для описания процедурных генераторов: пространство генерации (generative space) и пространство возможностей (possibility space). Мы дадим определения этим двум терминам, а затем рассмотрим интерактивные примеры, чтобы понять разницу между ними. Эти термины действительно полезны для описания процедурного генератора и для того, чтобы понимать разницу между двумя генераторами. Давайте приступим!</div>
-        <img src="https://hsto.org/webt/of/_l/pk/of_lpkbhwptap7cjkxkzyv6jwia.png" class="img-max-w" alt="Responsive image"></img>
-        <div class="pl-4 pr-4 pb-2">Представьте огромную книгу, в которой представлен скриншот каждого отдельного мира Minecraft. Каждый скриншот помечен случайным seed, уникальным числом, которое можно ввести в Minecraft и сгенерировать этот мир. На первой странице представлен мир, порождённый из seed = 0, на следующей — мир из seed = 1, и так далее. В целом генератор миров Minecraft содержит 264 случайных порождающих значений, и это огромное число: игра может сгенерировать 18 446 744 073 709 551 616 миров. Каждый раз, когда вы нажимаете на «New World», на основе одного из этих seed создаётся мир. Число 264 — это размер пространства генерации Minecraft, множество всего, что игра может сгенерировать.</div>
-        <img src="https://hsto.org/webt/wj/jw/mi/wjjwmiymjsqerapjqrm6lv-nk-w.jpeg" class="img-max-w" alt="Responsive image"></img>
-        <div class="pl-4 pr-4 pb-2">Теперь представьте, что мир Minecraft состоит только из обычной травы, бесконечно распространяющейся во всех направлениях. Под ней нет ни пещер, ни камня, нет деревьев и холмов, нет животных. Просто один слой тайлов травы. Кроме того, что это очень скучно, такой мир никогда не будет сгенерирован в Minecraft (если не использовать моддинг). Мы можем представить его, можем описать его, даже открыть Minecraft и создать его сами вручную — но Minecraft не может сгенерировать его.</div>
-        <div class="pl-4 pr-4 pb-2">Мир травы находится в том, что мы называем пространством возможностей миров Minecraft — множестве всех возможных миров Minecraft, которые мы можем вообразить, представить или описать. Но мир травы не находится в пространстве генерации Minecraft, потому что не может быть создан процедурным генератором игры. Мы можем представить мир Minecraft с совершенно точной копией Персеполиса в масштабе, или мир в виде вашей скульптуры из камня, сидящей и читающей эту статью — всё это возможные миры Minecraft, но игрой они генерироваться не будут.</div>
-        <div class="pl-4 pr-4 pb-2">Показанная выше схема даёт нам представление о том, как всё это выглядит. Всё, что находится в пространстве генерации Minecraft, должно также находиться в его пространстве возможностей, потому что если Minecraft может сгенерировать что-то, то это должно быть возможно создать в Minecraft! Но не всё из пространства возможностей находится в пространстве генерации, в том числе и наш пример с миром, состоящим из травы. Но в этой схеме не соблюдён масштаб. На самом деле, пространство возможностей Minecraft гораздо, гораздо больше, чем её пространство генерации.</div>
-        
-      </div>
-      
-      <div class="grad" id="grad3"></div>
-      <div class="subcard p-2 bg-light" id="morebar3">
-        <button class="btn btn-light btn-block text-left" type="button" onclick="collapsef(3);">
-          Подробнее...
-        </button>
-      </div>
-      
-    </div>
-    
+<row>
+  <div class="content-blocks-wrap">
+      <container-grow class="content-block">
+          <react id="example"></react> 
+          <img src="/assets/img/belka.jpg"  class="img-fluid" alt="HTML5 Doctor Logo" />
+          <p>
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas
+              sit aspernatur aut odit aut fugit, sed qui
+              ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
+          </p>
+        </container-grow>
+    {{template "content-blocks" .}}
   </div>
   
-  <div class="mt-4 pl-md-4 pl-sm-4 pr-md-0 pr-sm-0 col-menu col-no-padding col-sm-4 order-1 order-md-1 order-sm-2">
-    <div class="floatMaterial ">
-      <form class="form-signin">
-        
-        <input type="hidden" autofocus="true" />
-        
-        <div class="form-label-group">
-          <input  type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-          <label for="inputEmail">e-mail</label>
-        </div>
-        
-        <div class="form-label-group">
-          <input  type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-          <label for="inputPassword">Пароль</label>
-        </div>
-        
-        <div class="checkbox mb-3">
-          <label>
-            <input type="checkbox" value="remember-me"> Запомнить меня
-          </label>
-        </div>
-        <button class="btn btn-lg btn-success btn-block" type="submit">Войти</button>
-      </form>
-    </div>
-    
-    <div class="floatMaterial mt-4">
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a class="nav-link active" href="#">Active</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#">Disabled</a>
-        </li>
-      </ul>
-    </div>
+  <div class="menu">
+    {{template "login-form" .}}
+    {{template "example-menu-links" .}}
   </div>
-</div>
+  
+</row>
 {{end}}

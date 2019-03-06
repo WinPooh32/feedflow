@@ -1,6 +1,8 @@
 @charset 'utf-8';
 @import "reset";
 
+@import "login_form";
+
 @import "variables";
 @import "themes/sandstone";
 
@@ -68,8 +70,12 @@ $p-default: size(4);
 }
 
 wrapper{
-    @extend %reset;
+    @extend %reset, .container-fluid, .d-flex, .flex-column;
     min-height: 100vh;
+}
+
+body{
+    @extend .bg-light;
 }
 
 .responsive-border{
@@ -92,6 +98,8 @@ wrapper{
         margin-top: $p-default;
         margin-bottom: $p-default;
     }
+
+    @extend .bg-white, .shadow-sm;
 }
 
 .menu{
@@ -107,19 +115,40 @@ wrapper{
         padding-top: $p-default;
         padding-left: $p-default;
     }
+
+    @extend .col-sm-3, .col-md-3;
+}
+
+.menu-block, .menu-block-wrap{
+    @extend .bg-white;
+}
+
+.menu-block-wrap{
+    margin-bottom: $p-default;
+    @extend .bg-white, .shadow-sm, .p-2;
 }
 
 .menu-block{
-    margin-bottom: $p-default;     
+    max-width: 350px;
 }
 
-.menu-block-upper{
-    @include media-breakpoint-down(xs){
-        padding-top: 0px !important;
+@include media-breakpoint-down(xs){
+    .menu-block-wrap{
+        margin-bottom: $p-default/2;     
+    }
+}
+@include media-breakpoint-up(sm){
+    .menu-block-wrap{
+        margin-bottom: $p-default;     
     }
 }
 
-@include media-breakpoint-down(md) { 
+@include media-breakpoint-down(md) {
+    .container-responsive {
+        @include make-container();
+        @include reset-sizes();
+    }
+
     container-grow{
         //fluid container
         @include make-container();
@@ -129,6 +158,11 @@ wrapper{
 }
 
 @include media-breakpoint-up(lg) { 
+    .container-responsive{
+        @include make-container();
+        @include make-container-max-widths();
+    }
+    
     container-grow{
         //container with max-widths
         @include make-container();
@@ -150,4 +184,29 @@ row{
 container-grow > p, h1, h2, h3,h4{
     @extend .p-2;
     @extend .m-0;
+}
+
+.content-blocks-wrap{
+    @extend .col-sm-9, .col-md-9, .p-0;
+}
+
+.footer-wrap{
+    @extend .container-fluid, .bg-dark, .text-light, .p-0;
+}
+.header-wrap{
+    @extend .container-fluid, .bg-dark, .text-light;
+}
+
+ul.horizontal_menu li {
+    display: inline;
+    list-style-type: none;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 2px;
+}
+ul.horizontal_menu li.first{
+    margin-left: 0;
+}
+ul.horizontal_menu li.last{
+    margin-right: 0;
 }

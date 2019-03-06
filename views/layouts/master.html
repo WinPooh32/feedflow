@@ -7,20 +7,20 @@
 
 </head>
 <body>
-    <div class="container-fluid FlexItem p-0 m-0 fill">
+    <wrapper>
         
-        <div class="container-fluid bg-dark text-light">
+        <div class="header-wrap">
                 {{include "layouts/navbar"}}
         </div>
         
-        <div class="container flex-grow-1">
+        <container-grow>
             {{template "content" .}}
-        </div>
+        </container-grow>
         
-        <footer class="container-fluid bg-dark text-light mt-4">
+        <footer class="footer-wrap">
                 {{include "layouts/footer"}}
         </footer>
-    </div>  
+    </wrapper>  
 
     {{template "reactjs-dev" .}}
     {{template "bootstrapScripts" .}}
