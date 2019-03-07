@@ -38,6 +38,30 @@ paths:
           description: Too many requests.
 
   #Pages tagged api -----------------------------------------------
+  /user/name/isfree/{username}:
+    head:
+      summary: Check username is taken or not.
+      operationId: nameIsFree
+      tags:
+        - Pages
+      security: []  # no authentication
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 2
+      responses:
+        '200':
+          description: Username is free.
+        '409':
+          description: Username is taken.
+        '400':
+          description: Name length is less than 2 chars.
+        '500':
+          description: Internal server error.
+
   /pages/login:
     post:
       summary: Logs in and returns the authentication cookie.
