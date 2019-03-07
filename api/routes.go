@@ -42,6 +42,8 @@ func RouteAPI(router *gin.Engine) *gin.Engine {
 			router.PUT(route.Pattern, route.HandlerFunc)
 		case "DELETE":
 			router.DELETE(route.Pattern, route.HandlerFunc)
+		case "HEAD":
+			router.HEAD(route.Pattern, route.HandlerFunc)
 		}
 	}
 
@@ -75,6 +77,13 @@ var routes = Routes{
 		strings.ToUpper("Post"),
 		"/api/pages/login",
 		Login,
+	},
+
+	{
+		"NameIsFree",
+		strings.ToUpper("Head"),
+		"/api/user/name/isfree/:username",
+		NameIsFree,
 	},
 
 	{

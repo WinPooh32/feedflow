@@ -51,6 +51,33 @@ func Remove(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
+// NameIsFree - Check username is taken or not.
+func NameIsFree(ctx *gin.Context) {
+	name := ctx.Param("username")
+
+	if len(name) < 2 {
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	db, ok := database.FromContext(ctx)
+	if !ok {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	var found model.SigninRequest
+	db.First(&found, "Username = ?", name)
+
+	if found.ID != 0 {
+		//User exists
+		ctx.Status(http.StatusConflict)
+		return
+	}
+
+	ctx.Status(http.StatusOK)
+}
+
 // Signin - Singns in.
 func Signin(ctx *gin.Context) {
 	var person model.SigninRequest
