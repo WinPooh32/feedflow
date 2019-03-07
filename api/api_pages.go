@@ -90,10 +90,7 @@ func Signin(ctx *gin.Context) {
 
 	db.Create(&person)
 
-	store := ginsession.FromContext(ctx)
-	store.Set("user_id", person.ID)
-
-	if err := store.Save(); err != nil {
+	if err := loginSessionUpgrade(person, ctx); err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
@@ -143,18 +140,32 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
+	if err := loginSessionUpgrade(person, ctx); err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.Status(http.StatusOK)
+}
+
+func loginSessionUpgrade(person model.SigninRequest, ctx *gin.Context) error {
+	store := ginsession.FromContext(ctx)
+
 	//Upgrade user session previlegies
+	store, err := ginsession.Refresh(ctx)
+	if err != nil {
+		return err
+	}
+
 	hits, _ := store.Get("visit_hits")
 	store.Flush()
 
 	store.Set("visit_hits", hits)
 	store.Set("user_id", person.ID)
 
-	err := store.Save()
-	if err != nil {
-		ctx.AbortWithError(http.StatusInternalServerError, err)
-		return
+	if err := store.Save(); err != nil {
+		return err
 	}
 
-	ctx.Status(http.StatusOK)
+	return nil
 }
