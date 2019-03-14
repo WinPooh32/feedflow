@@ -13,9 +13,13 @@
     {{template "content-blocks" .}}
   </div>
   
-  <div class="menu">
-    {{template "login-form" .}}
-    {{template "example-menu-links" .}}
+  <div class="menu" id="menu" loggedIn="{.loggedIn}">
+    <!-- <react id="menu"></react> -->
+    <!-- {{ if not .loggedIn }}
+      {{template "login-form" .}}
+    {{ end }} -->
+  
+    <!-- {{template "example-menu-links" .}} -->
   </div>
   
 </row>

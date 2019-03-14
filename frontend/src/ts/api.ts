@@ -17,7 +17,7 @@ import * as url from "url";
 import { Configuration } from "./configuration";
 import globalAxios, { AxiosPromise, AxiosInstance } from 'axios';
 
-const BASE_PATH = "http://127.0.0.1:8080/api".replace(/\/+$/, "");
+const BASE_PATH = "https://winpooh32.tk".replace(/\/+$/, "");
 
 /**
  *
@@ -427,6 +427,39 @@ export const PagesApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary Check username is taken or not.
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        nameIsFree(username: string, options: any = {}): RequestArgs {
+            // verify required parameter 'username' is not null or undefined
+            if (username === null || username === undefined) {
+                throw new RequiredError('username','Required parameter username was null or undefined when calling nameIsFree.');
+            }
+            const localVarPath = `/user/name/isfree/{username}`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
+            const localVarUrlObj = url.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = Object.assign({ method: 'HEAD' }, baseOptions, options);
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = Object.assign({}, localVarHeaderParameter, options.headers);
+
+            return {
+                url: url.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Move page to archive.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -542,6 +575,20 @@ export const PagesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Check username is taken or not.
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        nameIsFree(username: string, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Response> {
+            const localVarAxiosArgs = PagesApiAxiosParamCreator(configuration).nameIsFree(username, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = Object.assign(localVarAxiosArgs.options, {url: basePath + localVarAxiosArgs.url})
+                return axios.request(axiosRequestArgs);                
+            };
+        },
+        /**
+         * 
          * @summary Move page to archive.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -609,6 +656,16 @@ export const PagesApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @summary Check username is taken or not.
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        nameIsFree(username: string, options?: any) {
+            return PagesApiFp(configuration).nameIsFree(username, options)(axios, basePath);
+        },
+        /**
+         * 
          * @summary Move page to archive.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -671,6 +728,18 @@ export class PagesApi extends BaseAPI {
      */
     public login(loginRequest: LoginRequest, options?: any) {
         return PagesApiFp(this.configuration).login(loginRequest, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @summary Check username is taken or not.
+     * @param {string} username 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PagesApi
+     */
+    public nameIsFree(username: string, options?: any) {
+        return PagesApiFp(this.configuration).nameIsFree(username, options)(this.axios, this.basePath);
     }
 
     /**

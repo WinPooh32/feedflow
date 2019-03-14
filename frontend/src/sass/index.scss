@@ -78,6 +78,13 @@ body{
     @extend .bg-light;
 }
 
+@include media-breakpoint-up(sm){
+    .reg-form-center{
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}
+
 .responsive-border{
     @include media-breakpoint-down(xs){
         @include border-0();

@@ -1,13 +1,12 @@
 {{define "login-form"}}
 <div class="menu-block-wrap" >
-    
-    <form class="menu-block form-signin m-auto">
+    <form class="menu-block form-signin m-auto" action="/api/pages/login" method="post">
         
-        <input type="hidden" autofocus="true" />
+        <input type="hidden" autofocus/>
         
         <div class="form-label-group">
-            <input  type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-            <label for="inputEmail">e-mail</label>
+            <input  type="username" id="username" class="form-control" placeholder="Имя пользователя" required>
+            <label for="username">Имя пользователя</label>
         </div>
         
         <div class="form-label-group">
@@ -17,10 +16,11 @@
         
         <div class="checkbox mb-3">
             <label>
-                <input type="checkbox" value="remember-me"> Запомнить меня
+                <input type="checkbox" value="remember-me">Запомнить меня
             </label>
         </div>
         <button class="btn btn-lg btn-success btn-block" type="submit">Войти</button>
+
     </form>
 </div>
 {{end}}

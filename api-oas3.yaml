@@ -8,6 +8,9 @@ security:
 servers:
   - url: 'http://127.0.0.1:8080/api'
     description: Dev server
+  
+  - url: 'https://winpooh32.tk'
+    description: Production server
 
 paths:
   #Feed tagged api ------------------------------------------------

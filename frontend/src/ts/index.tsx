@@ -1,18 +1,35 @@
-export * from "./api";
-export * from "./configuration";
+export * from "./api"
+export * from "./configuration"
 
-import * as React from "react"
-import * as ReactDOM from "react-dom"
-import { FeedApi, PagesApi, NewPageContent } from "./api";
+function contains(src: string, search: string): boolean{
+    src = src.toLocaleLowerCase()
+    return src.includes(search)
+}
 
-const feedApi = new FeedApi()
-const pagesApi = new PagesApi()
+function suffix(src: string, search: string): boolean{
+    src = src.toLocaleLowerCase()
+    return src.slice(-search.length) === search
+}
 
-import { Hello } from "./components/Hello";
+async function Render(){
+    const path = window.location.pathname
 
-ReactDOM.render(
-    <Hello compiler="TypeScript" framework="React" />,
-    document.getElementById("example")
-);
+    switch(true){
+        case suffix(path, '/signin') :{
+            const signon = await import("./renders/signon")
 
+            signon.Render()
+            break
+        }
+    
+        default: {
+            const content = await import("./renders/content") 
+            const menu = await import("./renders/menu") 
+            
+            content.Render()
+            menu.Render()
+        }
+    }
+}
 
+Render()
