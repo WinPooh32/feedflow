@@ -67,7 +67,7 @@ func NameIsFree(ctx *gin.Context) {
 	}
 
 	var found model.SigninRequest
-	db.First(&found, "Username = ?", name)
+	db.First(&found, "((lower(username))) = ((lower(?)))", name)
 
 	if found.ID != 0 {
 		//User exists
@@ -88,7 +88,7 @@ func Signin(ctx *gin.Context) {
 		return
 	}
 
-	//Try to bind form data to person
+	//Try to bind and validate binded form
 	if err := ctx.ShouldBind(&person); err != nil || !model.ValidSigninRequest(db, &person) {
 		ctx.AbortWithStatus(http.StatusNotAcceptable)
 		return
@@ -153,7 +153,7 @@ func Login(ctx *gin.Context) {
 	}
 
 	//Select person from database
-	db.First(&person, "username = ?", form.Username)
+	db.First(&person, "((lower(username))) = ((lower(?)))", form.Username)
 	if person.ID == 0 {
 		ctx.AbortWithStatus(http.StatusNotAcceptable)
 		return
@@ -163,7 +163,7 @@ func Login(ctx *gin.Context) {
 	salted := append([]byte(form.Password), person.Salt...)
 
 	if err := bcrypt.CompareHashAndPassword(person.PasswordHash, salted); err != nil {
-		ctx.AbortWithStatus(http.StatusInternalServerError)
+		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 

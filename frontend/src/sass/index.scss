@@ -2,6 +2,7 @@
 @import "reset";
 
 @import "login_form";
+@import "loader";
 
 @import "variables";
 @import "themes/sandstone";
@@ -76,6 +77,11 @@ wrapper{
 
 body{
     @extend .bg-light;
+}
+
+.no-border {
+    border: 0;
+    box-shadow: none; /* You may want to include this as bootstrap applies these styles too */
 }
 
 @include media-breakpoint-up(sm){

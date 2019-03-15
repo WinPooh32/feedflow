@@ -104,6 +104,7 @@ export class Signon extends React.Component<PropsState, SignonState>{
             if(status !== 200){return}
 
             console.log("SIGNED ON!")
+            window.open("/","_self")
         })
     }
 
@@ -114,7 +115,7 @@ export class Signon extends React.Component<PropsState, SignonState>{
 
         return (
             <div className="menu-block-wrap">
-            <h1 className="text-center mb-4">Регистрация пользователя</h1>
+            <h1 className="text-center mb-4">Регистрация</h1>
             <form onSubmit={this.handleSubmit} className="menu-block form-signin needs-validation">
                 <div className="form-label-group has-error has-feedback form-group">
                 <input 

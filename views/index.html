@@ -1,6 +1,15 @@
 {{define "content"}}
 <row>
   <div class="content-blocks-wrap">
+    <div class="content-block">
+        <div class="input-group">
+            <div class="input-group-append">
+                <button class="btn btn-success" type="button"><i class="fas fa-search"></i> </button>
+              </div>
+            <input type="text" class="form-control no-border" placeholder="Поиск "/>
+          </div>
+    </div>
+
       <container-grow class="content-block">
           <react id="example"></react> 
           <img src="/assets/img/belka.jpg"  class="img-fluid" alt="HTML5 Doctor Logo" />
@@ -9,17 +18,17 @@
               sit aspernatur aut odit aut fugit, sed qui
               ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
           </p>
-        </container-grow>
+      </container-grow>
     {{template "content-blocks" .}}
   </div>
   
-  <div class="menu" id="menu" loggedIn="{.loggedIn}">
-    <!-- <react id="menu"></react> -->
+  <div class="menu">
+    <react id="menu" loggedIn="{.loggedIn}"></react>
     <!-- {{ if not .loggedIn }}
       {{template "login-form" .}}
     {{ end }} -->
   
-    <!-- {{template "example-menu-links" .}} -->
+    {{template "example-menu-links" .}}
   </div>
   
 </row>

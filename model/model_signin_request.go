@@ -36,7 +36,7 @@ func ValidSigninRequest(db *gorm.DB, sr *SigninRequest) bool {
 	}
 
 	var found SigninRequest
-	db.First(&found, "Username = ? OR Email = ?", sr.Username, sr.Email)
+	db.First(&found, "username = ((lower(?))) OR email = ((lower(?)))", sr.Username, sr.Email)
 
 	return found.ID == 0
 }

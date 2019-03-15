@@ -33,9 +33,9 @@ func MigrateModels(db *gorm.DB) {
 		NewPageContent{},
 		SigninRequest{})
 
-	//Hash indeces for username
-	db.Exec("CREATE INDEX signin_request_index ON signin_request USING hash (username);")
+	//Hash indeces for username in lower case
+	db.Exec("CREATE INDEX signin_request_index ON signin_request USING hash ((lower(username)));")
 
 	//Hash indeces for tag values
-	db.Exec("CREATE INDEX tag_index ON tag USING hash (value);")
+	db.Exec("CREATE INDEX tag_index ON tag USING hash ((lower(value)));")
 }

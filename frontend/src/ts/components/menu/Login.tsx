@@ -11,7 +11,8 @@ export interface PropsState {}
 export interface LoginState { 
     form: {username: string, password: string},
     usernameValid: boolean,
-    passwordValid: boolean
+    passwordValid: boolean,
+    loading: boolean
  }
 
 export class Login extends React.Component<PropsState, LoginState> {
@@ -23,7 +24,8 @@ export class Login extends React.Component<PropsState, LoginState> {
         this.state = {
             form: {username: '', password: ''},
             usernameValid: true,
-            passwordValid: true
+            passwordValid: true,
+            loading: false
         } as LoginState
         
         this.handleChange = this.handleChange.bind(this);
@@ -60,31 +62,59 @@ export class Login extends React.Component<PropsState, LoginState> {
 
     private handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const value = target.value;
+        const trigger = target.type === 'checkbox' ? target.checked: false
         const name = target.name;
 
         this.setState((state): LoginState => {
-            state[name] = value
+            let mystate;
+            switch(name){
+                case "username": 
+                case "email":
+                case "password":{
+                    mystate = state.form
+                    break
+                }
+
+                default:{
+                    mystate = state
+                }
+            }
+
+            mystate[name] = value
+
             return state
         });
 
         if (name === "username") {
-            this.validateName(value as string)
+            
         } else if (name == "password"){
-            this.validatePassword(value as string)
+            
         }
+    }
+
+    disableLoading(){
+        setTimeout(()=>{
+            this.setState({loading: false})
+        }, 2 * 1000)
     }
     
     handleSubmit(event: React.FormEvent) {
         event.preventDefault();
 
         let state = this.state
-        if (state.usernameValid && state.passwordValid){
+        if (state.usernameValid && state.passwordValid && !state.loading ){
+
+            this.setState({loading: true})
+
             this.api.login(this.state.form).then(resp => {
                 let status = resp.status
                 if(status !== 200){return}
     
                 console.log(status, "Logged in!!!")
+                this.disableLoading()
+            }).catch(() => {
+                this.disableLoading()
             })
         }
     }
@@ -112,7 +142,6 @@ export class Login extends React.Component<PropsState, LoginState> {
                         />
                         <label htmlFor="username">Имя пользователя</label>
                     </div>
-
                     <div className="form-label-group has-error">
                         <input 
                             defaultValue={this.state.form.password} 
@@ -121,7 +150,7 @@ export class Login extends React.Component<PropsState, LoginState> {
                             id="inputPassword" 
                             name="password" 
                             className={"form-control " + validPwdClass}
-                            placeholder="Password" 
+                            placeholder="Пароль" 
                             autoCapitalize="none" 
                             autoCorrect="off" 
                             autoComplete="password" 
@@ -132,7 +161,7 @@ export class Login extends React.Component<PropsState, LoginState> {
                     </div>
 
                     <div className="form-label-group">
-                        <button className="btn btn-lg btn-success btn-block" type="submit">Войти</button>                                      
+                        <button className="btn btn-lg btn-success btn-block" type="submit"><CompButtonContent showLoader={this.state.loading}/></button>                                      
                     </div>
 
                     <div className="m-auto text-center">
@@ -141,5 +170,17 @@ export class Login extends React.Component<PropsState, LoginState> {
                 </form>
             </div>
         );
+    }
+}
+
+export interface ButtonContentProps {
+    showLoader: boolean
+}
+
+function CompButtonContent(props: ButtonContentProps): React.ReactElement<any>{
+    if(props.showLoader){
+        return <div className="loader m-auto"></div>
+    }else{
+        return <span>Войти</span>
     }
 }

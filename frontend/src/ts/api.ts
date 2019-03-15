@@ -17,7 +17,7 @@ import * as url from "url";
 import { Configuration } from "./configuration";
 import globalAxios, { AxiosPromise, AxiosInstance } from 'axios';
 
-const BASE_PATH = "https://winpooh32.tk".replace(/\/+$/, "");
+const BASE_PATH = "http://127.0.0.1:8080/api".replace(/\/+$/, "");
 
 /**
  *
