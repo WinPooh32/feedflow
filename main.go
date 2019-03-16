@@ -238,6 +238,8 @@ func httpsRedirect() {
 }
 
 func main() {
+	defer os.Exit(0)
+
 	if err := writePidFile("feedflow.pid"); err != nil {
 		log.Fatalln(err)
 	}
