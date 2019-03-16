@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -214,6 +215,22 @@ func initRouter(router *gin.Engine, opts options, debug bool) (*gin.Engine, func
 	}
 }
 
+func httpsRedirect() {
+	redirect := func(w http.ResponseWriter, req *http.Request) {
+		// remove/add not default ports from req.Host
+		target := "https://" + req.Host + req.URL.Path
+		if len(req.URL.RawQuery) > 0 {
+			target += "?" + req.URL.RawQuery
+		}
+		log.Printf("redirect to: %s", target)
+		http.Redirect(w, req, target,
+			// see @andreiavrammsd comment: often 307 > 301
+			http.StatusTemporaryRedirect)
+	}
+
+	go http.ListenAndServe(":80", http.HandlerFunc(redirect))
+}
+
 func main() {
 	if err := writePidFile("feedflow.pid"); err != nil {
 		log.Fatalln(err)
@@ -248,6 +265,9 @@ func main() {
 	if len(opts.Ssl) == 0 {
 		err = srv.ListenAndServe()
 	} else {
+		//Redirect http to https
+		httpsRedirect()
+
 		tlsConf := &tls.Config{}
 		tlsConf.NextProtos = []string{"h2", "http/1.1"}
 		srv.Server.TLSConfig = tlsConf
