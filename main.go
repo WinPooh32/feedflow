@@ -2,7 +2,6 @@ package main
 
 import (
 	"crypto/tls"
-	"flag"
 	"fmt"
 	"html/template"
 	"log"
@@ -17,6 +16,7 @@ import (
 	"github.com/WinPooh32/feedflow/database"
 	"github.com/WinPooh32/feedflow/model"
 	"github.com/WinPooh32/feedflow/web"
+	"github.com/jessevdk/go-flags"
 
 	gintemplate "github.com/WinPooh32/gin-template"
 	"github.com/fvbock/endless"
@@ -43,24 +43,41 @@ type settings struct {
 	DbSsl      *bool
 }
 
-func readSettings() settings {
-	var s settings
+type options struct {
+	Config string `short:"c" long:"config" default:"" no-ini:"true"`
 
-	s.Host = flag.String("host", "localhost", "listening server ip")
-	s.Port = flag.String("port", "8080", "listening port")
-	s.Ssl = flag.String("ssl", "", "cert;private")
-	s.Gzip = flag.Bool("gzip", false, "gzip compression")
+	Port string `short:"p"   default:"8080"      long:"port"  description:"listening port"`
+	Host string `short:"h"   default:"localhost" long:"host"  description:"listening server ip"`
+	Ssl  string `long:"ssl"  default:""                       description:"cert;private"`
+	Gzip bool   `long:"gzip"                                  description:"gzip compression"`
 
-	s.DbHost = flag.String("dbhost", "localhost", "listening database server ip")
-	s.DbPort = flag.String("dbport", "5432", "listening database port")
-	s.DbDriver = flag.String("dbdriver", "sqlite3", "The database diver")
-	s.DbUser = flag.String("dbuser", "", "The database username")
-	s.DbPassword = flag.String("dbpass", "", "The database user password")
-	s.DbName = flag.String("dbname", "storage", "The database name")
-	s.DbSsl = flag.Bool("dbssl", false, "The database ssl enabled")
+	DbHost     string `long:"dbhost"   default:"localhost" description:"listening database server ip"`
+	DbPort     string `long:"dbport"   default:"5432"      description:"listening database port"`
+	DbDriver   string `long:"dbdriver" default:"sqlite3"   description:"The database diver"`
+	DbUser     string `long:"dbuser"   default:""          description:"The database username"`
+	DbPassword string `long:"dbpass"   default:""          description:"The database user password"`
+	DbName     string `long:"dbname"   default:"storage"   description:"The database name"`
+	DbSsl      bool   `long:"dbssl"                        description:"The database ssl enabled"`
+}
 
-	flag.Parse()
-	return s
+func readSettings() options {
+	opts := options{}
+	parser := flags.NewParser(&opts, flags.PrintErrors|flags.PassDoubleDash)
+
+	if _, err := flags.ParseArgs(&opts, os.Args); err != nil {
+		log.Fatalln(err)
+	}
+
+	if len(opts.Config) > 0 {
+		// Parse an ini file
+		iniParser := flags.NewIniParser(parser)
+		if err := iniParser.ParseFile(opts.Config); err != nil {
+			log.Println("error parsing ini file: ", opts.Config)
+			log.Fatalln(err)
+		}
+	}
+
+	return opts
 }
 
 func listPartials(viewsPath, partialsPath, fileExtension string) []string {
@@ -128,21 +145,21 @@ func initGoSession() (store session.ManagerStore) {
 	return store
 }
 
-func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engine, func()) {
+func initRouter(router *gin.Engine, opts options, debug bool) (*gin.Engine, func()) {
 	log.Println("Initialize gin router...")
 
 	db, err := database.Init(database.Credential{
-		Driver:   *svSettings.DbDriver,
-		Host:     *svSettings.DbHost,
-		Port:     *svSettings.DbPort,
-		User:     *svSettings.DbUser,
-		Database: *svSettings.DbName,
-		Password: *svSettings.DbPassword,
-		Ssl:      *svSettings.DbSsl,
+		Driver:   opts.DbDriver,
+		Host:     opts.DbHost,
+		Port:     opts.DbPort,
+		User:     opts.DbUser,
+		Database: opts.DbName,
+		Password: opts.DbPassword,
+		Ssl:      opts.DbSsl,
 	}, debug)
 
 	//setup middlewares
-	if *svSettings.Gzip {
+	if opts.Gzip {
 		router.Use(gzip.Gzip(gzip.BestSpeed))
 	}
 
@@ -198,13 +215,17 @@ func initRouter(router *gin.Engine, svSettings settings, debug bool) (*gin.Engin
 }
 
 func main() {
+	if err := writePidFile("feedflow.pid"); err != nil {
+		log.Fatalln(err)
+	}
+
 	debug := gin.Mode() == gin.DebugMode
-	svSettings := readSettings()
+	opts := readSettings()
 
 	//Make new gin router
-	router, onShutdown := initRouter(gin.Default(), svSettings, debug)
+	router, onShutdown := initRouter(gin.Default(), opts, debug)
 
-	listenAt := fmt.Sprintf("%s:%s", *svSettings.Host, *svSettings.Port)
+	listenAt := fmt.Sprintf("%s:%s", opts.Host, opts.Port)
 
 	srv := endless.NewServer(listenAt, router)
 
@@ -224,14 +245,14 @@ func main() {
 
 	//Start the http server
 	var err error
-	if len(*svSettings.Ssl) == 0 {
+	if len(opts.Ssl) == 0 {
 		err = srv.ListenAndServe()
 	} else {
 		tlsConf := &tls.Config{}
 		tlsConf.NextProtos = []string{"h2", "http/1.1"}
 		srv.Server.TLSConfig = tlsConf
 
-		keys := strings.Split(*svSettings.Ssl, ";")
+		keys := strings.Split(opts.Ssl, ";")
 		err = srv.ListenAndServeTLS(keys[0], keys[1])
 	}
 
