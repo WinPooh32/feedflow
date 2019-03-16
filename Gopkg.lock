@@ -19,6 +19,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:460e34d7818cdf3e5c29705f95bf464e25f5d4a746c97fef9a5f6c87d125a6d3"
+  name = "github.com/cnjack/throttle"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "525175b56e18aa4549190ed3a1a77c66925b9cef"
+
+[[projects]]
+  branch = "master"
   digest = "1:56c69e124c07977fd63e910f0812fddc5af475a8d2007dbf78803b3ef6a9ee3e"
   name = "github.com/foolin/gin-template"
   packages = ["."]
@@ -201,14 +209,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a9511df45f46876bccc86c4eb01f17fef207fac224fdec4282c02077dd22183b"
-  name = "github.com/s12i/gin-throttle"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "3eff61d15cc58b2ec19e6b9a16354f04ad550378"
-
-[[projects]]
-  branch = "master"
   digest = "1:0e1be621cd92adbfb7b298598db9f3740844fe548eda6911425d1ad903a5d508"
   name = "github.com/tywkeene/go-fsevents"
   packages = ["."]
@@ -243,14 +243,6 @@
   revision = "a98ae47d97a5abb3a3e9045da36315f9f8312970"
 
 [[projects]]
-  branch = "master"
-  digest = "1:9fdc2b55e8e0fafe4b41884091e51e77344f7dc511c5acedcfd98200003bff90"
-  name = "golang.org/x/time"
-  packages = ["rate"]
-  pruneopts = "UT"
-  revision = "9d24e82272b4f38b78bc8cff74fa936d31ccd8ef"
-
-[[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
@@ -280,6 +272,7 @@
   input-imports = [
     "github.com/WinPooh32/gin-template",
     "github.com/WinPooh32/gzip",
+    "github.com/cnjack/throttle",
     "github.com/foolin/gin-template",
     "github.com/fvbock/endless",
     "github.com/gin-contrib/cors",
@@ -292,7 +285,6 @@
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/jinzhu/gorm/dialects/postgres",
     "github.com/jinzhu/gorm/dialects/sqlite",
-    "github.com/s12i/gin-throttle",
     "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"

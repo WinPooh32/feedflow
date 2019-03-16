@@ -21,13 +21,13 @@ import (
 
 	gintemplate "github.com/WinPooh32/gin-template"
 	"github.com/WinPooh32/gzip"
+	"github.com/cnjack/throttle"
 	"github.com/fvbock/endless"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	ginsession "github.com/go-session/gin-session"
 	"github.com/go-session/redis"
 	"github.com/go-session/session"
-	throttle "github.com/s12i/gin-throttle"
 )
 
 type settings struct {
@@ -161,9 +161,10 @@ func initRouter(router *gin.Engine, opts options, debug bool) (*gin.Engine, func
 	}, debug)
 
 	//setup middlewares
-	const maxEventsPerSec = 1000
-	const maxBurstSize = 20
-	router.Use(throttle.Throttle(maxEventsPerSec, maxBurstSize))
+	router.Use(throttle.Policy(&throttle.Quota{
+		Limit:  500,
+		Within: time.Second * 5,
+	}))
 
 	if opts.Gzip {
 		router.Use(gzip.Gzip(gzip.BestSpeed))
