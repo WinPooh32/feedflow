@@ -10,6 +10,14 @@
   revision = "a36946e85c415b2c7747636eb0355edee25391a4"
 
 [[projects]]
+  digest = "1:a450b5d2f2c5f0ae6636a5914cbfbfe4b36c55396fbae95478676e7f69adec98"
+  name = "github.com/WinPooh32/gzip"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b07653c4b4b188bf0af293ae44b72e7ac9623a17"
+  version = "v0.0.1"
+
+[[projects]]
   branch = "master"
   digest = "1:56c69e124c07977fd63e910f0812fddc5af475a8d2007dbf78803b3ef6a9ee3e"
   name = "github.com/foolin/gin-template"
@@ -32,14 +40,6 @@
   pruneopts = "UT"
   revision = "cf4846e6a636a76237a28d9286f163c132e841bc"
   version = "v1.2"
-
-[[projects]]
-  branch = "master"
-  digest = "1:a450b5d2f2c5f0ae6636a5914cbfbfe4b36c55396fbae95478676e7f69adec98"
-  name = "github.com/gin-contrib/gzip"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "b07653c4b4b188bf0af293ae44b72e7ac9623a17"
 
 [[projects]]
   branch = "master"
@@ -263,10 +263,10 @@
   analyzer-version = 1
   input-imports = [
     "github.com/WinPooh32/gin-template",
+    "github.com/WinPooh32/gzip",
     "github.com/foolin/gin-template",
     "github.com/fvbock/endless",
     "github.com/gin-contrib/cors",
-    "github.com/gin-contrib/gzip",
     "github.com/gin-gonic/gin",
     "github.com/go-session/gin-session",
     "github.com/go-session/redis",

@@ -20,9 +20,9 @@ import (
 	"github.com/jessevdk/go-flags"
 
 	gintemplate "github.com/WinPooh32/gin-template"
+	"github.com/WinPooh32/gzip"
 	"github.com/fvbock/endless"
 	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	ginsession "github.com/go-session/gin-session"
 	"github.com/go-session/redis"
