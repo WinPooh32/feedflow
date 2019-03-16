@@ -17,7 +17,7 @@ import * as url from "url";
 import { Configuration } from "./configuration";
 import globalAxios, { AxiosPromise, AxiosInstance } from 'axios';
 
-const BASE_PATH = "http://127.0.0.1:8080/api".replace(/\/+$/, "");
+const BASE_PATH = "http://176.53.162.199/api".replace(/\/+$/, "");
 
 /**
  *
@@ -117,6 +117,12 @@ export interface ModelError {
 export interface NewPageContent {
     /**
      * 
+     * @type {number}
+     * @memberof NewPageContent
+     */
+    id?: number;
+    /**
+     * 
      * @type {string}
      * @memberof NewPageContent
      */
@@ -129,10 +135,10 @@ export interface NewPageContent {
     content: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<Tag>}
      * @memberof NewPageContent
      */
-    tags: Array<string>;
+    tags: Array<Tag>;
 }
 
 /**
@@ -159,6 +165,20 @@ export interface SigninRequest {
      * @memberof SigninRequest
      */
     email: string;
+}
+
+/**
+ * 
+ * @export
+ * @interface Tag
+ */
+export interface Tag {
+    /**
+     * 
+     * @type {string}
+     * @memberof Tag
+     */
+    value: string;
 }
 
 /**
@@ -191,16 +211,11 @@ export const FeedApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Return next feed data chunk.
-         * @param {number} pageId 
          * @param {number} since 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        requestChunk(pageId: number, since: number, options: any = {}): RequestArgs {
-            // verify required parameter 'pageId' is not null or undefined
-            if (pageId === null || pageId === undefined) {
-                throw new RequiredError('pageId','Required parameter pageId was null or undefined when calling requestChunk.');
-            }
+        requestChunk(since: number, options: any = {}): RequestArgs {
             // verify required parameter 'since' is not null or undefined
             if (since === null || since === undefined) {
                 throw new RequiredError('since','Required parameter since was null or undefined when calling requestChunk.');
@@ -214,10 +229,6 @@ export const FeedApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarRequestOptions = Object.assign({ method: 'GET' }, baseOptions, options);
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-
-            if (pageId !== undefined) {
-                localVarQueryParameter['pageId'] = pageId;
-            }
 
             if (since !== undefined) {
                 localVarQueryParameter['since'] = since;
@@ -245,13 +256,12 @@ export const FeedApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Return next feed data chunk.
-         * @param {number} pageId 
          * @param {number} since 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        requestChunk(pageId: number, since: number, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Response> {
-            const localVarAxiosArgs = FeedApiAxiosParamCreator(configuration).requestChunk(pageId, since, options);
+        requestChunk(since: number, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<NewPageContent>> {
+            const localVarAxiosArgs = FeedApiAxiosParamCreator(configuration).requestChunk(since, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = Object.assign(localVarAxiosArgs.options, {url: basePath + localVarAxiosArgs.url})
                 return axios.request(axiosRequestArgs);                
@@ -269,13 +279,12 @@ export const FeedApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Return next feed data chunk.
-         * @param {number} pageId 
          * @param {number} since 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        requestChunk(pageId: number, since: number, options?: any) {
-            return FeedApiFp(configuration).requestChunk(pageId, since, options)(axios, basePath);
+        requestChunk(since: number, options?: any) {
+            return FeedApiFp(configuration).requestChunk(since, options)(axios, basePath);
         },
     };
 };
@@ -290,14 +299,13 @@ export class FeedApi extends BaseAPI {
     /**
      * 
      * @summary Return next feed data chunk.
-     * @param {number} pageId 
      * @param {number} since 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof FeedApi
      */
-    public requestChunk(pageId: number, since: number, options?: any) {
-        return FeedApiFp(this.configuration).requestChunk(pageId, since, options)(this.axios, this.basePath);
+    public requestChunk(since: number, options?: any) {
+        return FeedApiFp(this.configuration).requestChunk(since, options)(this.axios, this.basePath);
     }
 
 }
@@ -326,7 +334,7 @@ export const PagesApiAxiosParamCreator = function (configuration?: Configuration
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            localVarHeaderParameter['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+            localVarHeaderParameter['Content-Type'] = 'application/json';
 
             localVarUrlObj.query = Object.assign({}, localVarUrlObj.query, localVarQueryParameter, options.query);
             // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
