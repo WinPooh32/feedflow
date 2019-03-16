@@ -228,7 +228,7 @@ func httpsRedirect() {
 		if len(req.URL.RawQuery) > 0 {
 			target += "?" + req.URL.RawQuery
 		}
-		log.Printf("redirect to: %s", target)
+		// log.Printf("redirect to: %s", target)
 		http.Redirect(w, req, target,
 			// see @andreiavrammsd comment: often 307 > 301
 			http.StatusTemporaryRedirect)
