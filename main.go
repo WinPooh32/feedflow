@@ -33,10 +33,10 @@ import (
 type options struct {
 	Config string `short:"c" long:"config" default:"" no-ini:"true"`
 
-	Verbose bool `short:"c" long:"verbose" deafault:"false"`
+	Verbose bool `short:"v" long:"verbose" deafault:"false"`
 
-	Limit       int `short:"lim" long:"limit"         default:"500" description:"Request throttle"`
-	LimitWithin int `            long:"limit-within"  default"5"`
+	Limit       uint64 `short:"l" long:"limit"         default:"500" description:"Request throttle"`
+	LimitWithin uint64 `          long:"limit-within"  default:"5"`
 
 	Port string `short:"p"   long:"port"  default:"8080"       description:"listening port"`
 	Host string `short:"h"   long:"host"  default:"localhost"  description:"listening server ip"`
@@ -159,9 +159,11 @@ func initRouter(router *gin.Engine, opts options) (*gin.Engine, func()) {
 	}, verbose)
 
 	//setup middlewares
+	router.Use(cors.Default())
+
 	router.Use(throttle.Policy(&throttle.Quota{
 		Limit:  opts.Limit,
-		Within: time.Second * opts.LimitWithin,
+		Within: time.Second * time.Duration(opts.LimitWithin),
 	}))
 
 	if opts.Gzip {
@@ -179,10 +181,6 @@ func initRouter(router *gin.Engine, opts options) (*gin.Engine, func()) {
 	sessionExpireOpt := session.SetExpired(24 * 60 * 60) // 24 hours
 	sessionStoreOpt := session.SetStore(sessionStore)
 	router.Use(ginsession.New(sessionStoreOpt, sessionExpireOpt))
-
-	if debug {
-		router.Use(cors.Default())
-	}
 
 	//setup templates
 	initTemplateManager(router)
