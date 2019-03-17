@@ -13,6 +13,8 @@ import (
 	"crypto/rand"
 	"net/http"
 
+	"github.com/WinPooh32/gzip"
+
 	"github.com/WinPooh32/feedflow/database"
 	ginsession "github.com/go-session/gin-session"
 	"golang.org/x/crypto/bcrypt"
@@ -53,6 +55,11 @@ func Remove(c *gin.Context) {
 
 // NameIsFree - Check username is taken or not.
 func NameIsFree(ctx *gin.Context) {
+	w, ok := ctx.Writer.(*gzip.GzipWriter)
+	if ok {
+		w.SetSkipCompression(ctx)
+	}
+
 	name := ctx.Param("username")
 
 	if len(name) < 2 {
