@@ -33,10 +33,15 @@ import (
 type options struct {
 	Config string `short:"c" long:"config" default:"" no-ini:"true"`
 
-	Port string `short:"p"   default:"8080"      long:"port"  description:"listening port"`
-	Host string `short:"h"   default:"localhost" long:"host"  description:"listening server ip"`
-	Ssl  string `long:"ssl"  default:""                       description:"cert;private"`
-	Gzip bool   `long:"gzip"                                  description:"gzip compression"`
+	Verbose bool `short:"c" long:"verbose" deafault:"false"`
+
+	Limit       int `short:"lim" long:"limit"         default:"500" description:"Request throttle"`
+	LimitWithin int `            long:"limit-within"  default"5"`
+
+	Port string `short:"p"   long:"port"  default:"8080"       description:"listening port"`
+	Host string `short:"h"   long:"host"  default:"localhost"  description:"listening server ip"`
+	Ssl  string `            long:"ssl"   default:""           description:"cert;private"`
+	Gzip bool   `            long:"gzip"                       description:"gzip compression"`
 
 	DbHost     string `long:"dbhost"   default:"localhost" description:"listening database server ip"`
 	DbPort     string `long:"dbport"   default:"5432"      description:"listening database port"`
@@ -132,8 +137,16 @@ func initGoSession() (store session.ManagerStore) {
 	return store
 }
 
-func initRouter(router *gin.Engine, opts options, debug bool) (*gin.Engine, func()) {
+func initRouter(router *gin.Engine, opts options) (*gin.Engine, func()) {
 	log.Println("Initialize gin router...")
+
+	verbose := opts.Verbose
+
+	if verbose {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	db, err := database.Init(database.Credential{
 		Driver:   opts.DbDriver,
@@ -143,12 +156,12 @@ func initRouter(router *gin.Engine, opts options, debug bool) (*gin.Engine, func
 		Database: opts.DbName,
 		Password: opts.DbPassword,
 		Ssl:      opts.DbSsl,
-	}, debug)
+	}, verbose)
 
 	//setup middlewares
 	router.Use(throttle.Policy(&throttle.Quota{
-		Limit:  500,
-		Within: time.Second * 5,
+		Limit:  opts.Limit,
+		Within: time.Second * opts.LimitWithin,
 	}))
 
 	if opts.Gzip {
@@ -229,11 +242,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	debug := gin.Mode() == gin.DebugMode
 	opts := readSettings()
 
 	//Make new gin router
-	router, onShutdown := initRouter(gin.Default(), opts, debug)
+	router, onShutdown := initRouter(gin.Default(), opts)
 
 	listenAt := fmt.Sprintf("%s:%s", opts.Host, opts.Port)
 
