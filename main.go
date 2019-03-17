@@ -30,21 +30,6 @@ import (
 	"github.com/go-session/session"
 )
 
-type settings struct {
-	Port *string
-	Host *string
-	Ssl  *string
-	Gzip *bool
-
-	DbHost     *string
-	DbPort     *string
-	DbDriver   *string
-	DbUser     *string
-	DbPassword *string
-	DbName     *string
-	DbSsl      *bool
-}
-
 type options struct {
 	Config string `short:"c" long:"config" default:"" no-ini:"true"`
 
