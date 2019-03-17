@@ -142,12 +142,6 @@ func initRouter(router *gin.Engine, opts options) (*gin.Engine, func()) {
 
 	verbose := opts.Verbose
 
-	if verbose {
-		gin.SetMode(gin.DebugMode)
-	} else {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
 	db, err := database.Init(database.Credential{
 		Driver:   opts.DbDriver,
 		Host:     opts.DbHost,
@@ -159,7 +153,7 @@ func initRouter(router *gin.Engine, opts options) (*gin.Engine, func()) {
 	}, verbose)
 
 	//setup middlewares
-	router.Use(cors.Default())
+	router.Use(cors.Default()) //FIXME for debug purpose
 
 	router.Use(throttle.Policy(&throttle.Quota{
 		Limit:  opts.Limit,
@@ -241,6 +235,12 @@ func main() {
 	}
 
 	opts := readSettings()
+
+	if opts.Verbose {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	//Make new gin router
 	router, onShutdown := initRouter(gin.Default(), opts)
