@@ -153,6 +153,12 @@ func initRouter(router *gin.Engine, opts options) (*gin.Engine, func()) {
 	}, verbose)
 
 	//setup middlewares
+	router.Use(gin.Recovery())
+
+	if verbose {
+		router.Use(gin.Logger())
+	}
+
 	router.Use(cors.Default()) //FIXME for debug purpose
 
 	router.Use(throttle.Policy(&throttle.Quota{
@@ -243,7 +249,7 @@ func main() {
 	}
 
 	//Make new gin router
-	router, onShutdown := initRouter(gin.Default(), opts)
+	router, onShutdown := initRouter(gin.New(), opts)
 
 	listenAt := fmt.Sprintf("%s:%s", opts.Host, opts.Port)
 
