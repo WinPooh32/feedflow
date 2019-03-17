@@ -17,7 +17,7 @@ import * as url from "url";
 import { Configuration } from "./configuration";
 import globalAxios, { AxiosPromise, AxiosInstance } from 'axios';
 
-const BASE_PATH = "http://176.53.162.199/api".replace(/\/+$/, "");
+const BASE_PATH = "https://pooh32.tk/api".replace(/\/+$/, "");
 
 /**
  *

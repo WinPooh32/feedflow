@@ -6,14 +6,11 @@ info:
 security:
   - cookieAuth: []
 servers:
-  - url: 'http://176.53.162.199/api'
+  - url: 'https://pooh32.tk/api'
     description: Dev server
 
   - url: 'http://127.0.0.1:8080/api'
     description: Dev server
-  
-  - url: 'https://winpooh32.tk/api'
-    description: Production server
 
 paths:
   #Feed tagged api ------------------------------------------------
