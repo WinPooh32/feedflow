@@ -153,18 +153,24 @@ func initRouter(router *gin.Engine, opts options) (*gin.Engine, func()) {
 	}, verbose)
 
 	//setup middlewares
-	router.Use(gin.Recovery())
+
+	recovery := gin.Recovery()
+	cors := cors.Default() //FIXME for debug purpose
+	throttler := throttle.Policy(&throttle.Quota{
+		Limit:  opts.Limit,
+		Within: time.Second * time.Duration(opts.LimitWithin),
+	})
+
+	sessionStore := initGoSession()
+	sessionExpireOpt := session.SetExpired(24 * 60 * 60) // 24 hours
+	sessionStoreOpt := session.SetStore(sessionStore)
+	sessioner := ginsession.New(sessionStoreOpt, sessionExpireOpt)
+
+	router.Use(throttler, recovery, cors, sessioner)
 
 	if verbose {
 		router.Use(gin.Logger())
 	}
-
-	router.Use(cors.Default()) //FIXME for debug purpose
-
-	router.Use(throttle.Policy(&throttle.Quota{
-		Limit:  opts.Limit,
-		Within: time.Second * time.Duration(opts.LimitWithin),
-	}))
 
 	if opts.Gzip {
 		router.Use(gzip.Gzip(gzip.BestSpeed))
@@ -176,11 +182,6 @@ func initRouter(router *gin.Engine, opts options) (*gin.Engine, func()) {
 		router.Use(database.NewMiddleware(db))
 		model.MigrateModels(db)
 	}
-
-	sessionStore := initGoSession()
-	sessionExpireOpt := session.SetExpired(24 * 60 * 60) // 24 hours
-	sessionStoreOpt := session.SetStore(sessionStore)
-	router.Use(ginsession.New(sessionStoreOpt, sessionExpireOpt))
 
 	//setup templates
 	initTemplateManager(router)
