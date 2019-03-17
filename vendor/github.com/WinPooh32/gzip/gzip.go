@@ -35,11 +35,12 @@ func Gzip(level int) gin.HandlerFunc {
 
 		gz := gzPool.Get().(*gzip.Writer)
 		defer gzPool.Put(gz)
+		defer gz.Reset(ioutil.Discard)
 		gz.Reset(c.Writer)
 
 		c.Header("Content-Encoding", "gzip")
 		c.Header("Vary", "Accept-Encoding")
-		c.Writer = &gzipWriter{c.Writer, gz}
+		c.Writer = &GzipWriter{c.Writer, gz, false}
 		defer func() {
 			gz.Close()
 			c.Header("Content-Length", fmt.Sprint(c.Writer.Size()))
@@ -48,29 +49,44 @@ func Gzip(level int) gin.HandlerFunc {
 	}
 }
 
-type gzipWriter struct {
+type GzipWriter struct {
 	gin.ResponseWriter
-	writer *gzip.Writer
+	writer          *gzip.Writer
+	skipCompression bool
 }
 
-func (g *gzipWriter) WriteString(s string) (int, error) {
-	return g.writer.Write([]byte(s))
+func (g *GzipWriter) WriteString(s string) (int, error) {
+	if g.skipCompression {
+		return g.ResponseWriter.Write([]byte(s))
+	} else {
+		return g.writer.Write([]byte(s))
+	}
 }
 
-func (g *gzipWriter) Write(data []byte) (int, error) {
-	return g.writer.Write(data)
+func (g *GzipWriter) Write(data []byte) (int, error) {
+	if g.skipCompression {
+		return g.ResponseWriter.Write(data)
+	} else {
+		return g.writer.Write(data)
+	}
 }
 
 // Fix: https://github.com/mholt/caddy/issues/38
-func (g *gzipWriter) WriteHeader(code int) {
+func (g *GzipWriter) WriteHeader(code int) {
 	g.Header().Del("Content-Length")
 	g.ResponseWriter.WriteHeader(code)
+}
+
+func (g *GzipWriter) SetSkipCompression(c *gin.Context) {
+	g.skipCompression = true
+	c.Header("Content-Encoding", "")
+	c.Header("Vary", "")
 }
 
 func shouldCompress(req *http.Request) bool {
 	if !strings.Contains(req.Header.Get("Accept-Encoding"), "gzip") ||
 		strings.Contains(req.Header.Get("Connection"), "Upgrade") ||
-	        strings.Contains(req.Header.Get("Content-Type"), "text/event-stream") {
+		strings.Contains(req.Header.Get("Content-Type"), "text/event-stream") {
 
 		return false
 	}

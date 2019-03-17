@@ -10,12 +10,12 @@
   revision = "a36946e85c415b2c7747636eb0355edee25391a4"
 
 [[projects]]
-  digest = "1:a450b5d2f2c5f0ae6636a5914cbfbfe4b36c55396fbae95478676e7f69adec98"
+  branch = "master"
+  digest = "1:97f57e7f6010ebc055c7860f92ee0410022c7fd37d5b727a2f8de0b1e0aff45c"
   name = "github.com/WinPooh32/gzip"
   packages = ["."]
   pruneopts = "UT"
-  revision = "b07653c4b4b188bf0af293ae44b72e7ac9623a17"
-  version = "v0.0.1"
+  revision = "1eff4d017b865e3797f948187319507454476c3c"
 
 [[projects]]
   branch = "master"
@@ -123,8 +123,8 @@
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   pruneopts = "UT"
-  revision = "c823c79ea1570fb5ff454033735a8e68575d1d0f"
-  version = "v1.3.0"
+  revision = "b5d812f8a3706043e23a9cd5babf2e5423744d30"
+  version = "v1.3.1"
 
 [[projects]]
   digest = "1:a2cff208d4759f6ba1b1cd228587b0a1869f95f22542ec9cd17fff64430113c7"
@@ -156,12 +156,12 @@
   revision = "04140366298a54a039076d798123ffa108fff46c"
 
 [[projects]]
-  digest = "1:3e551bbb3a7c0ab2a2bf4660e7fcad16db089fdcfbb44b0199e62838038623ea"
+  digest = "1:f5a2051c55d05548d2d4fd23d244027b59fbd943217df8aa3b5e170ac2fd6e1b"
   name = "github.com/json-iterator/go"
   packages = ["."]
   pruneopts = "UT"
-  revision = "1624edc4454b8682399def8740d46db5e4362ba4"
-  version = "v1.1.5"
+  revision = "0ff49de124c6f76f8494e194af75bde0f1a49a29"
+  version = "v1.1.6"
 
 [[projects]]
   digest = "1:b18ffc558326ebaed3b4a175617f1e12ed4e3f53d6ebfe5ba372a3de16d22278"
@@ -176,12 +176,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:3bb9c8451d199650bfd303e0068d86f135952fead374ad87c09a9b8a2cc4bd7c"
+  digest = "1:e150b5fafbd7607e2d638e4e5cf43aa4100124e5593385147b0a74e2733d8b0d"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
   pruneopts = "UT"
-  revision = "369ecd8cea9851e459abb67eb171853e3986591e"
-  version = "v0.0.6"
+  revision = "c2a7a6ca930a4cd0bc33a3f298eb71960732a3a7"
+  version = "v0.0.7"
 
 [[projects]]
   digest = "1:4a49346ca45376a2bba679ca0e83bec949d780d4e927931317904bad482943ec"
@@ -209,11 +209,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:0e1be621cd92adbfb7b298598db9f3740844fe548eda6911425d1ad903a5d508"
+  digest = "1:97177724560c285baf7b68ea3a9e193f7d3dc0b9f5d90029989ad3dbe2952131"
   name = "github.com/tywkeene/go-fsevents"
   packages = ["."]
   pruneopts = "UT"
-  revision = "e9e014604d244a42efffbbfac0142be3247dfdb3"
+  revision = "0af0ce2816133720257fed4b88519f80fe5c6b96"
 
 [[projects]]
   digest = "1:4887e9e89c80299aa520d718239809fdd2a47a9aa394909b169959bfbc424ddf"
@@ -232,15 +232,15 @@
     "blowfish",
   ]
   pruneopts = "UT"
-  revision = "8dd112bcdc25174059e45e07517d9fc663123347"
+  revision = "a1f597ede03a7bef967a422b5b3a5bd08805a01e"
 
 [[projects]]
   branch = "master"
-  digest = "1:f96e48fc7b2d4992742749bf96f6247fb1d2346672aec5300dc29c06ab7da061"
+  digest = "1:f36c7b9a36158e62ffe5d8b02d1b5955500c13106cdaeebf5323d88863cae96f"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "a98ae47d97a5abb3a3e9045da36315f9f8312970"
+  revision = "a2f829d7f35f2ed1c3520c553a6226495455cae0"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
