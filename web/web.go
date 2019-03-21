@@ -3,51 +3,31 @@ package web
 import (
 	"log"
 	"net/http"
-	"reflect"
-
-	ginsession "github.com/go-session/gin-session"
 
 	"github.com/WinPooh32/feedflow/database"
+	"github.com/WinPooh32/feedflow/user"
 
 	gintemplate "github.com/foolin/gin-template"
 	"github.com/gin-gonic/gin"
 )
 
 func index(ctx *gin.Context) {
-	if _, ok := database.FromContext(ctx); ok {
-
-		// db.First(model.NewPageContent{})
-
-		store := ginsession.FromContext(ctx)
-
-		var hits float64
-		hitsI, ok := store.Get("visit_hits")
-		if ok {
-			tmp, _ := hitsI.(float64)
-			hits = tmp
-			log.Println("HITS: ", hits, reflect.TypeOf(hitsI))
-		}
-
-		hits++
-		store.Set("visit_hits", hits)
-
-		userID, ok := store.Get("user_id")
-
-		err := store.Save()
-		if err != nil {
-			ctx.AbortWithError(500, err)
-			return
-		}
-
-		// ctx.Header("Content-Type", "text/html; charset=utf-8") // You have to set 'Content-Type'
-		gintemplate.HTML(ctx, http.StatusOK, "index", gin.H{
-			"title":   "Hello, web!",
-			"hits":    hits,
-			"user_id": userID,
-		})
-	} else {
+	if _, ok := database.FromContext(ctx); !ok {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
+
+	myuser := user.New(ctx)
+	myuser.SessionHit()
+	myuser.SessionSave()
+
+	log.Println("User", myuser.SessionGetID(), " HITS: ", myuser.SessionGetHits())
+
+	gintemplate.HTML(ctx, http.StatusOK, "index", gin.H{
+		"title": "Hello, web!",
+		"hits":  myuser.SessionGetHits(),
+		// "user_id": userID,
+	})
 }
 
 func signin(ctx *gin.Context) {

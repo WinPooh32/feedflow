@@ -13,9 +13,12 @@ import (
 	"crypto/rand"
 	"net/http"
 
+	"github.com/WinPooh32/feedflow/user/previlegies"
+
 	"github.com/WinPooh32/gzip"
 
 	"github.com/WinPooh32/feedflow/database"
+	"github.com/WinPooh32/feedflow/user"
 	ginsession "github.com/go-session/gin-session"
 	"golang.org/x/crypto/bcrypt"
 
@@ -124,10 +127,9 @@ func Signin(ctx *gin.Context) {
 
 	db.Create(&person)
 
-	if err := loginSessionUpgrade(person, ctx); err != nil {
-		ctx.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
+	u := user.New(ctx)
+	u.SessionUpgrade(&person, previlegies.User)
+	u.SessionSave()
 
 	ctx.Status(http.StatusOK)
 }
